@@ -6,6 +6,10 @@ namespace Interview
 {
     public class DeckManager : MonoBehaviour
     {
+        
+        /// <summary>
+        /// 
+        /// </summary>
         [Header("Deck Configuration")]
         [SerializeField] private List<SkillCardData> allOwnedCards = new List<SkillCardData>();
         [SerializeField] private int startingHandSize = 5;
