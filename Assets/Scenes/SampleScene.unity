@@ -959,13 +959,14 @@ GameObject:
   - component: {fileID: 258060451}
   - component: {fileID: 258060453}
   - component: {fileID: 258060452}
+  - component: {fileID: 258060454}
   m_Layer: 5
   m_Name: MouseImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &258060451
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1028,6 +1029,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 258060450}
   m_CullTransparentMesh: 1
+--- !u!114 &258060454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258060450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80ca3036f18c434dbb5d996e83dd12e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panel: {fileID: 0}
+  cardNameText: {fileID: 0}
+  cardTypeText: {fileID: 0}
+  cardValueText: {fileID: 0}
+  cardDescriptionText: {fileID: 0}
+  cardIconImage: {fileID: 0}
+  cardBackgroundImage: {fileID: 0}
+  offset: {x: 15, y: -15}
+  followMouse: 1
+  fadeSpeed: 5
 --- !u!1 &313233929
 GameObject:
   m_ObjectHideFlags: 0
@@ -5070,6 +5093,7 @@ GameObject:
   - component: {fileID: 2037511234}
   - component: {fileID: 2037511236}
   - component: {fileID: 2037511237}
+  - component: {fileID: 2037511238}
   m_Layer: 5
   m_Name: PlayerHand
   m_TagString: Untagged
@@ -5193,6 +5217,22 @@ MonoBehaviour:
   drawPile: []
   hand: []
   discardPile: []
+--- !u!114 &2037511238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2037511232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 645ae40bc7a84cacb1764af2a4e73084, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deckManager: {fileID: 2037511237}
+  handPanel: {fileID: 0}
+  cardButtonPrefab: {fileID: 4078870474625791471, guid: 44e3db00c6fd3f24cb15d513cf3bc92c, type: 3}
+  mouseUIPanel: {fileID: 0}
 --- !u!1 &2137205095
 GameObject:
   m_ObjectHideFlags: 0
