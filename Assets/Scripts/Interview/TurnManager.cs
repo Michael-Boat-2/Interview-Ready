@@ -45,7 +45,7 @@ namespace Interview
             StartPlayerTurn();
         }
     
-        private void StartPlayerTurn()
+        public void StartPlayerTurn()
         {
             currentPhase = TurnPhase.PlayerTurn;
             OnPlayerTurnStart?.Invoke();
