@@ -894,8 +894,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "THE \nCONNECTOR"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4238fe20d37ee4a4f97b6084f16a8071, type: 2}
+  m_sharedMaterial: {fileID: 8123583850458920147, guid: 4238fe20d37ee4a4f97b6084f16a8071, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -925,7 +925,7 @@ MonoBehaviour:
   m_enableAutoSizing: 1
   m_fontSizeMin: 110
   m_fontSizeMax: 140
-  m_fontStyle: 19
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -2375,8 +2375,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Play
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4238fe20d37ee4a4f97b6084f16a8071, type: 2}
+  m_sharedMaterial: {fileID: 8123583850458920147, guid: 4238fe20d37ee4a4f97b6084f16a8071, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
