@@ -3137,7 +3137,17 @@ MonoBehaviour:
   interviewerDoubt: {fileID: 11400000, guid: bcb0cae26a0a4d143adc0023004fc438, type: 2}
   enemyMinDamage: 3
   enemyMaxDamage: 7
-  testStartingDeck: []
+  testStartingDeck:
+  - {fileID: 11400000, guid: 7583d48a3e0d8894cb1733e091d35419, type: 2}
+  - {fileID: 11400000, guid: 7583d48a3e0d8894cb1733e091d35419, type: 2}
+  - {fileID: 11400000, guid: 7583d48a3e0d8894cb1733e091d35419, type: 2}
+  - {fileID: 11400000, guid: 7583d48a3e0d8894cb1733e091d35419, type: 2}
+  - {fileID: 11400000, guid: 7583d48a3e0d8894cb1733e091d35419, type: 2}
+  - {fileID: 11400000, guid: a5d24278f99372d4788e724f1f830e82, type: 2}
+  - {fileID: 11400000, guid: a5d24278f99372d4788e724f1f830e82, type: 2}
+  - {fileID: 11400000, guid: a5d24278f99372d4788e724f1f830e82, type: 2}
+  - {fileID: 11400000, guid: a5d24278f99372d4788e724f1f830e82, type: 2}
+  - {fileID: 11400000, guid: a5d24278f99372d4788e724f1f830e82, type: 2}
   autoStart: 1
 --- !u!1 &1009058972
 GameObject:

@@ -1,7 +1,12 @@
+using UnityEngine;
+
 namespace Cards
 {
-    public class JobRoleData
+    [CreateAssetMenu (fileName = "JobRoleData", menuName = "Scriptable Objects/JobRoleData")]
+    public class JobRoleData : ScriptableObject
     {
+        
+        
         
     }
 }

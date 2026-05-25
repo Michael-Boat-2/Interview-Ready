@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 66062a01d93d75d439ab5e6a9f782cf3, type: 3}
-  m_Name: SoftSkill 0
+  m_Name: WebDevelopment Skill
   m_EditorClassIdentifier: 
-  cardName: SoftSkill
-  description: Base Soft Skill
-  cardType: 1
-  value: 5
+  cardName: 'Web Dev Skill '
+  description: 
+  cardType: 0
+  value: 0
   cardIcon: {fileID: 0}
-  cardColor: {r: 1, g: 0.7790721, b: 0.082352936, a: 1}
-  flavorText: Your basic leadership skills helped you with +5 composure
+  cardColor: {r: 0.23137255, g: 0.69803923, b: 0.43137255, a: 1}
+  flavorText: 
