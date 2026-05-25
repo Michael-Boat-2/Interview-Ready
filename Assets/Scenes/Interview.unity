@@ -3137,6 +3137,7 @@ MonoBehaviour:
   interviewerDoubt: {fileID: 11400000, guid: bcb0cae26a0a4d143adc0023004fc438, type: 2}
   enemyMinDamage: 3
   enemyMaxDamage: 7
+  maxSelectedCards: 5
   testStartingDeck:
   - {fileID: 11400000, guid: 7583d48a3e0d8894cb1733e091d35419, type: 2}
   - {fileID: 11400000, guid: 7583d48a3e0d8894cb1733e091d35419, type: 2}
@@ -4677,6 +4678,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1683112385}
   m_CullTransparentMesh: 1
+--- !u!1 &1714568607
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1714568608}
+  m_Layer: 0
+  m_Name: VisualsInInterviewScene
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1714568608
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714568607}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 757.87744, y: 425.2086, z: -4.3679533}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1716814386
 GameObject:
   m_ObjectHideFlags: 0
@@ -5240,9 +5272,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deckManager: {fileID: 2037511237}
+  gameManager: {fileID: 0}
   handPanel: {fileID: 0}
   cardButtonPrefab: {fileID: 4078870474625791471, guid: 44e3db00c6fd3f24cb15d513cf3bc92c, type: 3}
+  playHandButton: {fileID: 0}
+  playHandButtonLabel: {fileID: 0}
   mouseUIPanel: {fileID: 0}
+  selectedOutlineColor: {r: 1, g: 0.9, b: 0.1, a: 1}
+  defaultOutlineColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &2137205095
 GameObject:
   m_ObjectHideFlags: 0
@@ -5425,3 +5462,4 @@ SceneRoots:
   - {fileID: 450934891}
   - {fileID: 1347852581}
   - {fileID: 988656756}
+  - {fileID: 1714568608}
