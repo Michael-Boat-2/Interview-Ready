@@ -6,8 +6,8 @@ public class ScreenFlow : MonoBehaviour
 {
     [SerializeField]private GameObject screen1;
     [SerializeField]private GameObject screen2;
-    
-    
+
+    [SerializeField] private float textSpeed;
     
     [SerializeField]private TMP_Text display_text;
     
@@ -27,6 +27,19 @@ public class ScreenFlow : MonoBehaviour
     {
         
     }
+
+
+
+    public void PlayButtonPressed()
+    {
+        display_text.text = "Game Has Playeded";
+    }
+
+    public void QuitButtonPressed()
+    {
+        display_text.text = "Game Has Quitted";
+    }
+    
 
     public void ShowTestInfo()
     {
