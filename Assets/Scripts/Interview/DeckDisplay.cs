@@ -74,41 +74,9 @@ namespace Interview
             }
         }
         
-        private Color GetCardColor(CardType cardType)
-        {
-            switch (cardType)
-            {
-                case CardType.Technical:
-                    return new Color(0.2f, 0.6f, 1f); // Blue
-                case CardType.Soft:
-                    return new Color(0.2f, 0.8f, 0.4f); // Green
-                case CardType.Access:
-                    return new Color(0.9f, 0.6f, 0.2f); // Orange
-                default:
-                    return Color.gray;
-            }
-        }
         
-        private void AddHoverEvents(GameObject buttonObj, SkillCardData card)
-        {
-            // Add EventTrigger if it doesn't exist
-            UnityEngine.EventSystems.EventTrigger trigger = buttonObj.GetComponent<UnityEngine.EventSystems.EventTrigger>();
-            if (trigger == null)
-                trigger = buttonObj.AddComponent<UnityEngine.EventSystems.EventTrigger>();
-            
-            // Pointer enter event
-            UnityEngine.EventSystems.EventTrigger.Entry enterEntry = new UnityEngine.EventSystems.EventTrigger.Entry();
-            enterEntry.eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter;
-            enterEntry.callback.AddListener((data) => { OnCardHoverEnter(card); });
-            trigger.triggers.Add(enterEntry);
-            
-            // Pointer exit event
-            UnityEngine.EventSystems.EventTrigger.Entry exitEntry = new UnityEngine.EventSystems.EventTrigger.Entry();
-            exitEntry.eventID = UnityEngine.EventSystems.EventTriggerType.PointerExit;
-            exitEntry.callback.AddListener((data) => { OnCardHoverExit(); });
-            trigger.triggers.Add(exitEntry);
-        }
         
+        /*
         private void OnCardClicked(int cardIndex)
         {
             if (currentHand.Count > cardIndex)
@@ -124,22 +92,63 @@ namespace Interview
                 }
             }
         }
+        */
         
-        private void OnCardHoverEnter(SkillCardData card)
+        private void OnPlayHandClicked()
         {
-            if (mouseUIPanel != null)
-            {
-                mouseUIPanel.ShowCardInfo(card);
-            }
+            if (gameManager != null)
+                gameManager.PlaySelectedHand();
+        }
+
+        private void SetPlayHandButtonState(bool interactable)
+        {
+            if (playHandButton != null)
+                playHandButton.interactable = interactable;
         }
         
-        private void OnCardHoverExit()
+        private void AddHoverEvents(GameObject buttonObj, SkillCardData card)
         {
-            if (mouseUIPanel != null)
+            
+            // Add EventTrigger if it doesn't exist
+            UnityEngine.EventSystems.EventTrigger trigger = buttonObj.GetComponent<UnityEngine.EventSystems.EventTrigger>();
+            if (trigger == null)
+                trigger = buttonObj.AddComponent<UnityEngine.EventSystems.EventTrigger>();
+
+            // Pointer enter event
+            var enterEntry = new UnityEngine.EventSystems.EventTrigger.Entry
             {
-                mouseUIPanel.Hide();
+                eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter
+            };
+            enterEntry.callback.AddListener((_) => mouseUIPanel?.ShowCardInfo(card));
+            trigger.triggers.Add(enterEntry);
+
+            // Pointer exit event
+            var exitEntry = new UnityEngine.EventSystems.EventTrigger.Entry
+            {
+                eventID = UnityEngine.EventSystems.EventTriggerType.PointerExit
+            };
+            exitEntry.callback.AddListener((_) => mouseUIPanel?.Hide());
+            trigger.triggers.Add(exitEntry);
+            
+        }
+        
+        
+        
+        private Color GetCardColor(CardType cardType)
+        {
+            switch (cardType)
+            {
+                case CardType.Technical:
+                    return new Color(0.2f, 0.6f, 1f); // Blue
+                case CardType.Soft:
+                    return new Color(0.2f, 0.8f, 0.4f); // Green
+                case CardType.Access:
+                    return new Color(0.9f, 0.6f, 0.2f); // Orange
+                default:
+                    return Color.gray;
             }
         }
+     
         
         void OnDestroy()
         {

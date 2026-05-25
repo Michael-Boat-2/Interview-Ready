@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int enemyMinDamage = 3;
     [SerializeField] private int enemyMaxDamage = 7;
     
+    [Header("Hand Settings")]
+    [SerializeField] private int maxSelectedCards = 5;
+    
       
     [Header("Test Cards")]
     [SerializeField] private List<SkillCardData> testStartingDeck = new List<SkillCardData>();
@@ -30,6 +33,13 @@ public class GameManager : MonoBehaviour
     public System.Action OnInterviewWon;
     public System.Action OnInterviewLost;
     public System.Action<string> OnBattleMessage;
+    
+    
+    // Fired whenever the selected hand changes — UI listens to this to highlight cards
+    public System.Action<List<SkillCardData>> OnSelectedHandChanged;
+
+    private List<SkillCardData> selectedHand = new List<SkillCardData>();
+    
     
     private bool isBattleActive = false;
     
@@ -91,8 +101,8 @@ public class GameManager : MonoBehaviour
     
     public void StartInterview()
     {
-        Debug.Log("=== INTERVIEW BEGINS ===");
-        OnBattleMessage?.Invoke("Interview starts! Prove your skills!");
+        Debug.Log("Interview BEGINS");
+        OnBattleMessage?.Invoke("Interview starts!");
         
         // Reset all systems
         playerConfidence?.ResetForNewInterview();
@@ -118,15 +128,143 @@ public class GameManager : MonoBehaviour
     
     
     
+    //Called by deck display
+    // Toggle a card in or out of the selected hand.
+    // Returns true if the card is now selected, false if deselected or rejected.
+    
+    public bool ToggleCardSelection(SkillCardData card)
+    {
+        if (!isBattleActive || turnManager.CurrentPhase != TurnPhase.PlayerTurn)
+        {
+            OnBattleMessage?.Invoke("It's not your turn!");
+            return false;
+        }
+
+        if (!deckManager.Hand.Contains(card))
+        {
+            Debug.LogWarning("Tried to select a card that isn't in hand.");
+            return false;
+        }
+
+        if (selectedHand.Contains(card))
+        {
+            // Deselect
+            selectedHand.Remove(card);
+            OnSelectedHandChanged?.Invoke(new List<SkillCardData>(selectedHand));
+            OnBattleMessage?.Invoke($"{card.cardName} removed from selection.");
+            return false;
+        }
+        else
+        {
+            if (selectedHand.Count >= maxSelectedCards)
+            {
+                OnBattleMessage?.Invoke($"You can only select up to {maxSelectedCards} cards!");
+                return false;
+            }
+
+            selectedHand.Add(card);
+            OnSelectedHandChanged?.Invoke(new List<SkillCardData>(selectedHand));
+            OnBattleMessage?.Invoke($"{card.cardName} added to selection. ({selectedHand.Count}/{maxSelectedCards})");
+            return true;
+        }
+    }
+
+    public bool IsCardSelected(SkillCardData card) => selectedHand.Contains(card);
+    public int SelectedCount => selectedHand.Count;
+    public int MaxSelectedCards => maxSelectedCards;
+    
+    public void PlaySelectedHand()
+    {
+        if (!isBattleActive)
+        {
+            Debug.Log("No active interview!");
+            return;
+        }
+
+        if (turnManager.CurrentPhase != TurnPhase.PlayerTurn)
+        {
+            OnBattleMessage?.Invoke("Wait for your turn!");
+            return;
+        }
+
+        if (selectedHand.Count == 0)
+        {
+            OnBattleMessage?.Invoke("Select at least one card to play!");
+            return;
+        }
+
+        // Total up all effects
+        int totalDoubtDamage = 0;
+        int totalComposureGain = 0;
+        List<string> playedNames = new List<string>();
+
+        foreach (SkillCardData card in selectedHand)
+        {
+            playedNames.Add(card.cardName);
+            AccumulateCardEffect(card, ref totalDoubtDamage, ref totalComposureGain);
+        }
+
+        // Apply totalled effects
+        string summary = $"Played: {string.Join(", ", playedNames)}";
+
+        if (totalDoubtDamage > 0)
+        {
+            interviewerDoubt?.ReduceDoubt(totalDoubtDamage);
+            summary += $"  |  -{totalDoubtDamage} Interviewer Doubt";
+        }
+
+        if (totalComposureGain > 0)
+        {
+            playerConfidence?.AddComposure(totalComposureGain);
+            summary += $"  |  +{totalComposureGain} Composure";
+        }
+
+        OnBattleMessage?.Invoke(summary);
+        Debug.Log(summary);
+
+        // Discard played cards
+        foreach (SkillCardData card in selectedHand)
+            deckManager.PlayCard(card);
+
+        selectedHand.Clear();
+        OnSelectedHandChanged?.Invoke(selectedHand);
+
+        CheckBattleState();
+    }
+
+    
+    private void AccumulateCardEffect(SkillCardData card, ref int doubtDamage, ref int composureGain)
+    {
+        switch (card.cardType)
+        {
+            case CardType.Technical:
+                doubtDamage += card.value;
+                break;
+
+            case CardType.Soft:
+                composureGain += card.value;
+                doubtDamage += Mathf.Max(1, card.value / 2); // Soft skills still chip away at doubt
+                break;
+
+            case CardType.Access:
+                // Networking / access cards split the value between both stats
+                doubtDamage += Mathf.CeilToInt(card.value * 0.6f);
+                composureGain += Mathf.FloorToInt(card.value * 0.4f);
+                break;
+        }
+    }
+    
     private void OnPlayerTurnStarted()
     {
         if (!isBattleActive) return;
-        
-        Debug.Log("Your turn - Play skill cards!");
-        OnBattleMessage?.Invoke("Your turn. Choose a skill to demonstrate.");
-        
-        // UI should enable card buttons here
+
+        selectedHand.Clear();
+        OnSelectedHandChanged?.Invoke(selectedHand);
+
+        Debug.Log("Your turn — select up to 5 cards and play your hand!");
+        OnBattleMessage?.Invoke("Your turn. Build your hand, then play it.");
     }
+    
     
     private void OnEnemyTurnStarted()
     {
@@ -169,70 +307,15 @@ public class GameManager : MonoBehaviour
             turnManager?.EndEnemyTurn();
         }
     }
+
     
-    public void PlayCard(SkillCardData card)
+    public void EndPlayerTurn()
     {
-        if (!isBattleActive)
+        if (!isBattleActive) return;
+        
+        if (turnManager != null && turnManager.CurrentPhase == TurnPhase.PlayerTurn)
         {
-            Debug.Log("No active interview!");
-            return;
-        }
-        
-        if (turnManager.CurrentPhase != TurnPhase.PlayerTurn)
-        {
-            Debug.Log("Not your turn!");
-            OnBattleMessage?.Invoke("Wait for your turn!");
-            return;
-        }
-        
-        if (deckManager == null)
-        {
-            Debug.LogError("DeckManager missing!");
-            return;
-        }
-        
-        // Check if card is in hand
-        if (!deckManager.Hand.Contains(card))
-        {
-            Debug.Log("Card not in hand!");
-            return;
-        }
-        
-        // Apply card effect based on type
-        string effectMessage = ApplyCardEffect(card);
-        OnBattleMessage?.Invoke(effectMessage);
-        
-        // Move card to discard
-        deckManager.PlayCard(card);
-        
-        // Check win/loss conditions after card play
-        CheckBattleState();
-        
-        // If battle still active and it's still player turn, continue
-        // Player can play multiple cards per turn
-    }
-    
-    private string ApplyCardEffect(SkillCardData card)
-    {
-        switch (card.cardType)
-        {
-            case CardType.Technical:
-                int damage = card.value;
-                interviewerDoubt?.ReduceDoubt(damage);
-                return $"Used {card.cardName}! Dealt {damage} damage to interviewer's doubt!";
-                
-            case CardType.Soft:
-                int shield = card.value;
-                playerConfidence?.AddComposure(shield);
-                return $"Used {card.cardName}! Gained {shield} composure!";
-                
-            case CardType.Access:
-                int boost = card.value;
-                playerConfidence?.AddComposure(boost / 2);
-                return $"Used {card.cardName}! Networking pays off! Gained {boost / 2} composure.";
-                
-            default:
-                return $"Used {card.cardName}! No effect?";
+            turnManager.EndPlayerTurn();
         }
     }
     
@@ -263,7 +346,7 @@ public class GameManager : MonoBehaviour
         if (!isBattleActive) return;
         
         isBattleActive = false;
-        Debug.Log("=== YOU GOT THE JOB! ===");
+        Debug.Log("YOU GOT THE JIB");
         OnBattleMessage?.Invoke("Congratulations! The interviewer is impressed. You got the job!");
         OnInterviewWon?.Invoke();
         
@@ -279,7 +362,7 @@ public class GameManager : MonoBehaviour
         if (!isBattleActive) return;
         
         isBattleActive = false;
-        Debug.Log("=== YOU DIDN'T GET THE JOB ===");
+        Debug.Log("INTERVIEWER PASSES");
         OnBattleMessage?.Invoke("You didn't get the job. Keep building your skills and try again!");
         OnInterviewLost?.Invoke();
         
@@ -290,15 +373,7 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    public void EndPlayerTurn()
-    {
-        if (!isBattleActive) return;
-        
-        if (turnManager != null && turnManager.CurrentPhase == TurnPhase.PlayerTurn)
-        {
-            turnManager.EndPlayerTurn();
-        }
-    }
+ 
     
     // For UI buttons
     public bool IsPlayerTurn()
