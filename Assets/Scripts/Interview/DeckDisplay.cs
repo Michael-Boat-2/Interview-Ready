@@ -51,7 +51,7 @@ namespace Interview
             SetPlayHandButtonState(false);
         }
 
-       //Update hand display
+         //Update hand display
         void UpdateDeckDisplay(List<SkillCardData> hand)
         {
             currentHand = hand;
@@ -120,23 +120,35 @@ namespace Interview
                 SkillCardData card = currentHand[i];
                 bool isSelected = gameManager != null && gameManager.IsIndexSelected(i);
 
-                // Use an Outline component if present, otherwise tint the button
-                Outline outline = cardButtons[i].GetComponent<Outline>();
-                if (outline != null)
+
+                if (isSelected)
                 {
-                    outline.enabled = isSelected;
-                    outline.effectColor = selectedOutlineColor;
+                    
+                    var img = cardButtons[i].GetComponent<CardHighlight>();
+                    if (img != null)
+                    {
+                        //Color base_ = GetCardColor(card.cardType);
+                    
+                        //Highlight is true
+                        img.Highlight(true);
+                    
+                    }
+                    
                 }
                 else
                 {
-                    // Fallback: slightly brighten the image to indicate selection
-                    Image img = cardButtons[i].GetComponent<Image>();
+                    var img = cardButtons[i].GetComponent<CardHighlight>();
                     if (img != null)
                     {
-                        Color base_ = GetCardColor(card.cardType);
-                        img.color = isSelected ? base_ * 1.4f : base_;
+                        //Color base_ = GetCardColor(card.cardType);
+                    
+                        //Highlight is true
+                        img.Highlight(false);
+                    
                     }
                 }
+                
+               
             }
         }
 
