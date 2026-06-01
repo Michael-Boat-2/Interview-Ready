@@ -26,10 +26,10 @@ namespace Interview
         [SerializeField] private Color selectedOutlineColor = new Color(1f, 0.9f, 0.1f); // Yellow highlight
         [SerializeField] private Color defaultOutlineColor = Color.clear;
 
-        private List<Button> cardButtons = new List<Button>();
+        [SerializeField]private List<Button> cardButtons = new List<Button>();
         private List<SkillCardData> currentHand = new List<SkillCardData>();
 
-        void Start()
+        void Awake()
         {
             if (deckManager == null)
                 deckManager = FindObjectOfType<DeckManager>();
@@ -80,9 +80,9 @@ namespace Interview
                     buttonData = newButtonObj.AddComponent<CardButtonData>();
                 buttonData.SetCard(card);
 
-                // Click toggles selection
-                SkillCardData capturedCard = card;
-                newButton.onClick.AddListener(() => OnCardClicked(capturedCard, newButtonObj));
+                // Click toggles selection — capture index so duplicates are treated as separate slots
+                int capturedIndex = i;
+                newButton.onClick.AddListener(() => OnCardClicked(capturedIndex, newButtonObj));
 
                 AddHoverEvents(newButtonObj, card);
 
@@ -95,10 +95,10 @@ namespace Interview
         }
 
      
-        private void OnCardClicked(SkillCardData card, GameObject buttonObj)
+        private void OnCardClicked(int handIndex, GameObject buttonObj)
         {
             if (gameManager == null) return;
-            gameManager.ToggleCardSelection(card);
+            gameManager.ToggleCardSelection(handIndex);
             // Visuals are updated via the OnSelectedHandChanged callback
         }
 
@@ -118,7 +118,7 @@ namespace Interview
             for (int i = 0; i < cardButtons.Count && i < currentHand.Count; i++)
             {
                 SkillCardData card = currentHand[i];
-                bool isSelected = gameManager != null && gameManager.IsCardSelected(card);
+                bool isSelected = gameManager != null && gameManager.IsIndexSelected(i);
 
                 // Use an Outline component if present, otherwise tint the button
                 Outline outline = cardButtons[i].GetComponent<Outline>();

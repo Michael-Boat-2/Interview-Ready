@@ -123,6 +123,27 @@ namespace Interview
             return true;
         }
     
+
+        // Play a card by index — safe for duplicate cards since it uses RemoveAt
+        public bool PlayCardAt(int index)
+        {
+            if (index < 0 || index >= hand.Count)
+            {
+                Debug.LogWarning("Invalid hand index!");
+                return false;
+            }
+
+            SkillCardData card = hand[index];
+            hand.RemoveAt(index);
+            discardPile.Add(card);
+
+            OnHandChanged?.Invoke(hand);
+            OnDiscardPileCountChanged?.Invoke(discardPile.Count);
+
+            Debug.Log($"Played card at [{index}]: {card.cardName}. Moved to discard.");
+            return true;
+        }
+    
         // Reshuffle discard pile into draw pile
         private void ReshuffleFromDiscard()
         {

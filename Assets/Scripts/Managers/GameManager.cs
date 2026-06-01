@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using Interview;
@@ -17,6 +18,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private InterviewerDoubt interviewerDoubt;
     
     
+    [Header("Debug UI")]
+    [SerializeField] private Image confidenceFill;
+    [SerializeField] private Image doubtFill;
+
     [Header("Enemy Settings")]
     [SerializeField] private int enemyMinDamage = 3;
     [SerializeField] private int enemyMaxDamage = 7;
@@ -38,7 +43,7 @@ public class GameManager : MonoBehaviour
     // Fired whenever the selected hand changes — UI listens to this to highlight cards
     public System.Action<List<SkillCardData>> OnSelectedHandChanged;
 
-    private List<SkillCardData> selectedHand = new List<SkillCardData>();
+    private List<int> selectedHandIndices = new List<int>(); // indices into hand, not references
     
     
     private bool isBattleActive = false;
@@ -52,23 +57,29 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // Find references if not assigned
-        if (turnManager == null)
-            turnManager = FindObjectOfType<TurnManager>();
+        if (!turnManager)
+            turnManager = FindFirstObjectByType<TurnManager>();
 
-        if (deckManager == null)
+        if (!deckManager)
         {
-            deckManager = FindObjectOfType<DeckManager>();
+            deckManager = FindFirstObjectByType<DeckManager>();
             testStartingDeck = deckManager.GetAllOwnedCards();
         }
 
-       
-            
 
-        if (playerConfidence == null)
-            playerConfidence = Resources.Load<PlayerConfidence>("PlayerConfidence");
 
-        if (interviewerDoubt == null)
-            interviewerDoubt = Resources.Load<InterviewerDoubt>("InterviewerDoubt");
+
+        if (!playerConfidence)
+        {
+            Debug.LogWarning("No player confidence found.");
+        }
+
+
+        if (!interviewerDoubt)
+        {
+            Debug.LogWarning("No interviewer doubt.");
+        }
+           
 
         // Subscribe to events
         if (turnManager != null)
@@ -108,6 +119,19 @@ public class GameManager : MonoBehaviour
         playerConfidence?.ResetForNewInterview();
         interviewerDoubt?.ResetForNewInterview();
         
+        // Hook filled images up to stat events
+        if (confidenceFill != null && playerConfidence != null)
+        {
+            confidenceFill.fillAmount = playerConfidence.ConfidencePercentage;
+            playerConfidence.OnConfidenceChanged += () => confidenceFill.fillAmount = playerConfidence.ConfidencePercentage;
+        }
+
+        if (doubtFill != null && interviewerDoubt != null)
+        {
+            doubtFill.fillAmount = interviewerDoubt.DoubtPercentage;
+            interviewerDoubt.OnDoubtChanged += () => doubtFill.fillAmount = interviewerDoubt.DoubtPercentage;
+        }
+
         // Setup deck with test cards
         if (deckManager != null && testStartingDeck.Count > 0)
         {
@@ -132,7 +156,7 @@ public class GameManager : MonoBehaviour
     // Toggle a card in or out of the selected hand.
     // Returns true if the card is now selected, false if deselected or rejected.
     
-    public bool ToggleCardSelection(SkillCardData card)
+    public bool ToggleCardSelection(int handIndex)
     {
         if (!isBattleActive || turnManager.CurrentPhase != TurnPhase.PlayerTurn)
         {
@@ -140,38 +164,51 @@ public class GameManager : MonoBehaviour
             return false;
         }
 
-        if (!deckManager.Hand.Contains(card))
+        if (handIndex < 0 || handIndex >= deckManager.Hand.Count)
         {
-            Debug.LogWarning("Tried to select a card that isn't in hand.");
+            Debug.LogWarning("Invalid hand index.");
             return false;
         }
 
-        if (selectedHand.Contains(card))
+        SkillCardData card = deckManager.Hand[handIndex];
+
+        if (selectedHandIndices.Contains(handIndex))
         {
             // Deselect
-            selectedHand.Remove(card);
-            OnSelectedHandChanged?.Invoke(new List<SkillCardData>(selectedHand));
+            selectedHandIndices.Remove(handIndex);
+            OnSelectedHandChanged?.Invoke(GetSelectedCards());
             OnBattleMessage?.Invoke($"{card.cardName} removed from selection.");
             return false;
         }
         else
         {
-            if (selectedHand.Count >= maxSelectedCards)
+            if (selectedHandIndices.Count >= maxSelectedCards)
             {
                 OnBattleMessage?.Invoke($"You can only select up to {maxSelectedCards} cards!");
                 return false;
             }
 
-            selectedHand.Add(card);
-            OnSelectedHandChanged?.Invoke(new List<SkillCardData>(selectedHand));
-            OnBattleMessage?.Invoke($"{card.cardName} added to selection. ({selectedHand.Count}/{maxSelectedCards})");
+            selectedHandIndices.Add(handIndex);
+            OnSelectedHandChanged?.Invoke(GetSelectedCards());
+            OnBattleMessage?.Invoke($"{card.cardName} added to selection. ({selectedHandIndices.Count}/{maxSelectedCards})");
             return true;
         }
     }
 
-    public bool IsCardSelected(SkillCardData card) => selectedHand.Contains(card);
-    public int SelectedCount => selectedHand.Count;
+    public bool IsIndexSelected(int handIndex) => selectedHandIndices.Contains(handIndex);
+    public int SelectedCount => selectedHandIndices.Count;
     public int MaxSelectedCards => maxSelectedCards;
+
+    private List<SkillCardData> GetSelectedCards()
+    {
+        List<SkillCardData> selected = new List<SkillCardData>();
+        foreach (int i in selectedHandIndices)
+        {
+            if (i < deckManager.Hand.Count)
+                selected.Add(deckManager.Hand[i]);
+        }
+        return selected;
+    }
     
     public void PlaySelectedHand()
     {
@@ -187,7 +224,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (selectedHand.Count == 0)
+        if (selectedHandIndices.Count == 0)
         {
             OnBattleMessage?.Invoke("Select at least one card to play!");
             return;
@@ -198,7 +235,8 @@ public class GameManager : MonoBehaviour
         int totalComposureGain = 0;
         List<string> playedNames = new List<string>();
 
-        foreach (SkillCardData card in selectedHand)
+        List<SkillCardData> selectedCards = GetSelectedCards();
+        foreach (SkillCardData card in selectedCards)
         {
             playedNames.Add(card.cardName);
             AccumulateCardEffect(card, ref totalDoubtDamage, ref totalComposureGain);
@@ -222,14 +260,19 @@ public class GameManager : MonoBehaviour
         OnBattleMessage?.Invoke(summary);
         Debug.Log(summary);
 
-        // Discard played cards
-        foreach (SkillCardData card in selectedHand)
-            deckManager.PlayCard(card);
+        // Discard played cards — sort descending so removing higher indices first doesn't shift lower ones
+        selectedHandIndices.Sort((a, b) => b.CompareTo(a));
+        foreach (int i in selectedHandIndices)
+            deckManager.PlayCardAt(i);
 
-        selectedHand.Clear();
-        OnSelectedHandChanged?.Invoke(selectedHand);
+        selectedHandIndices.Clear();
+        OnSelectedHandChanged?.Invoke(new List<SkillCardData>());
 
         CheckBattleState();
+
+        // Hand was accepted — switch to enemy turn
+        if (isBattleActive)
+            turnManager?.EndPlayerTurn();
     }
 
     
@@ -258,8 +301,17 @@ public class GameManager : MonoBehaviour
     {
         if (!isBattleActive) return;
 
-        selectedHand.Clear();
-        OnSelectedHandChanged?.Invoke(selectedHand);
+        selectedHandIndices.Clear();
+        OnSelectedHandChanged?.Invoke(new List<SkillCardData>());
+
+        // Refill hand at the start of each player turn
+        if (deckManager != null)
+        {
+            while (deckManager.HandCount < 5)
+            {
+                if (!deckManager.DrawCard()) break;
+            }
+        }
 
         Debug.Log("Your turn — select up to 5 cards and play your hand!");
         OnBattleMessage?.Invoke("Your turn. Build your hand, then play it.");
@@ -292,20 +344,10 @@ public class GameManager : MonoBehaviour
         // Apply damage to player
         playerConfidence?.TakeDamage(damage);
         
-        // Draw new cards for next turn
         yield return new WaitForSeconds(0.3f);
-        
+
         if (isBattleActive && playerConfidence.CurrentConfidence > 0)
-        {
-            // Draw back to hand size (5 cards)
-            while (deckManager != null && deckManager.HandCount < 5)
-            {
-                deckManager.DrawCard();
-            }
-            
-            // End enemy turn (goes back to player)
             turnManager?.EndEnemyTurn();
-        }
     }
 
     
@@ -346,7 +388,7 @@ public class GameManager : MonoBehaviour
         if (!isBattleActive) return;
         
         isBattleActive = false;
-        Debug.Log("YOU GOT THE JIB");
+        Debug.Log("YOU GOT THE JOB");
         OnBattleMessage?.Invoke("Congratulations! The interviewer is impressed. You got the job!");
         OnInterviewWon?.Invoke();
         
@@ -362,7 +404,7 @@ public class GameManager : MonoBehaviour
         if (!isBattleActive) return;
         
         isBattleActive = false;
-        Debug.Log("INTERVIEWER PASSES");
+        Debug.Log("YOU DID NOT GET THE JOB");
         OnBattleMessage?.Invoke("You didn't get the job. Keep building your skills and try again!");
         OnInterviewLost?.Invoke();
         
@@ -409,13 +451,3 @@ public class GameManager : MonoBehaviour
     
     
 }
-
-
-
-    
- 
-    
-
-   
-    
- 
