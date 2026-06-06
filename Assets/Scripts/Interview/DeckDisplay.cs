@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cards;
+using Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -69,15 +70,23 @@ namespace Interview
                 SkillCardData card = hand[i];
                 GameObject newButtonObj = Instantiate(cardButtonPrefab, handPanel);
                 Button newButton = newButtonObj.GetComponent<Button>();
-                Image fillImage = newButtonObj.GetComponent<Image>();
-
-                if (fillImage != null)
-                    fillImage.color = GetCardColor(card.cardType);
+                    
 
                 // Store card reference
                 CardButtonData buttonData = newButtonObj.GetComponent<CardButtonData>();
-                if (buttonData == null)
+                
+                if (!buttonData)
                     buttonData = newButtonObj.AddComponent<CardButtonData>();
+                
+                Image fillImage = buttonData.cardImage;
+
+                if (fillImage)
+                {
+                    fillImage.color = GetCardColor(card.cardType);
+                    fillImage.sprite = card.cardIcon;
+                }
+                   
+                
                 buttonData.SetCard(card);
 
                 // Click toggles selection — capture index so duplicates are treated as separate slots
@@ -163,35 +172,44 @@ namespace Interview
             if (playHandButton != null)
                 playHandButton.interactable = interactable;
         }
-
-        // ─────────────────────────────────────────────
-        //  Hover
-        // ─────────────────────────────────────────────
+        
+  
+        /// <summary>
+        /// Adding hover events for the button
+        /// </summary>
+   
 
         private void AddHoverEvents(GameObject buttonObj, SkillCardData card)
         {
-            UnityEngine.EventSystems.EventTrigger trigger = buttonObj.GetComponent<UnityEngine.EventSystems.EventTrigger>();
-            if (trigger == null)
+            var trigger = buttonObj.GetComponent<UnityEngine.EventSystems.EventTrigger>();
+            
+            if (!trigger)
+            {
                 trigger = buttonObj.AddComponent<UnityEngine.EventSystems.EventTrigger>();
+            }
+               
 
             var enterEntry = new UnityEngine.EventSystems.EventTrigger.Entry
             {
                 eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter
             };
-            enterEntry.callback.AddListener((_) => mouseUIPanel?.ShowCardInfo(card));
+            
+            enterEntry.callback.AddListener(_ => mouseUIPanel?.ShowCardInfo(card));
             trigger.triggers.Add(enterEntry);
+            
 
             var exitEntry = new UnityEngine.EventSystems.EventTrigger.Entry
             {
                 eventID = UnityEngine.EventSystems.EventTriggerType.PointerExit
             };
-            exitEntry.callback.AddListener((_) => mouseUIPanel?.Hide());
+            exitEntry.callback.AddListener(_ => mouseUIPanel?.Hide());
             trigger.triggers.Add(exitEntry);
         }
 
-        // ─────────────────────────────────────────────
-        //  Helpers
-        // ─────────────────────────────────────────────
+        /// <summary>
+        /// Helper functions
+        /// </summary>
+  
 
         private Color GetCardColor(CardType cardType)
         {
@@ -204,20 +222,16 @@ namespace Interview
             }
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
-            if (deckManager != null)
+            if (deckManager)
                 deckManager.OnHandChanged -= UpdateDeckDisplay;
 
-            if (gameManager != null)
+            if (gameManager)
                 gameManager.OnSelectedHandChanged -= OnSelectionChanged;
         }
     }
 
-    // Stores the card reference on each button GameObject
-    public class CardButtonData : MonoBehaviour
-    {
-        public SkillCardData card;
-        public void SetCard(SkillCardData newCard) => card = newCard;
-    }
+
+   
 }

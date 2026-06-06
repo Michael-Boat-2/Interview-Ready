@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 66062a01d93d75d439ab5e6a9f782cf3, type: 3}
-  m_Name: SoftSkill 0
+  m_Name: Teamwork
   m_EditorClassIdentifier: 
-  cardName: SoftSkill
-  description: Base Soft Skill
+  cardName: Teamwork
+  description: Good at working with people
   cardType: 1
-  value: 5
+  value: 3
   cardIcon: {fileID: -1884586238521606060, guid: 6019df395f7fe9242aa7788547185ecf, type: 3}
-  cardColor: {r: 1, g: 0.7790721, b: 0.082352936, a: 1}
+  cardColor: {r: 0.8415094, g: 0.6760453, b: 0.27150586, a: 1}

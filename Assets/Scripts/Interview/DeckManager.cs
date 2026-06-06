@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cards;
+using System;
+using Random = UnityEngine.Random;
 
 namespace Interview
 {
@@ -20,10 +22,10 @@ namespace Interview
         [SerializeField] private List<SkillCardData> discardPile = new List<SkillCardData>();
     
         // Events
-        public System.Action<List<SkillCardData>> OnHandChanged;
-        public System.Action<int> OnDrawPileCountChanged;
-        public System.Action<int> OnDiscardPileCountChanged;
-        public System.Action OnDeckReshuffled;
+        public Action<List<SkillCardData>> OnHandChanged;
+        public Action<int> OnDrawPileCountChanged;
+        public Action<int> OnDiscardPileCountChanged;
+        public Action OnDeckReshuffled;
     
         public List<SkillCardData> Hand => hand;
         public int HandCount => hand.Count;

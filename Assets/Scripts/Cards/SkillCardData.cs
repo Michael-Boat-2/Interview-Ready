@@ -17,6 +17,9 @@ namespace Cards
 
         [Header("Basic Info")]
         public string cardName;
+        
+        [Header("Description Text")]
+        [TextArea(3, 5)]
         public string description;
     
         [Header("Card Type")]
@@ -29,8 +32,6 @@ namespace Cards
         public Sprite cardIcon;
         public Color cardColor = Color.white;
     
-        [Header("Flavor")]
-        [TextArea(2, 3)]
-        public string flavorText;
+       
     }
 }

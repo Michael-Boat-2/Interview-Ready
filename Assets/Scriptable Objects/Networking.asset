@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 66062a01d93d75d439ab5e6a9f782cf3, type: 3}
-  m_Name: SoftSkill 0
+  m_Name: Networking
   m_EditorClassIdentifier: 
-  cardName: SoftSkill
-  description: Base Soft Skill
-  cardType: 1
+  cardName: Networking
+  description: 'Good at connecting with people '
+  cardType: 2
   value: 5
-  cardIcon: {fileID: -1884586238521606060, guid: 6019df395f7fe9242aa7788547185ecf, type: 3}
-  cardColor: {r: 1, g: 0.7790721, b: 0.082352936, a: 1}
+  cardIcon: {fileID: -382545362, guid: 6019df395f7fe9242aa7788547185ecf, type: 3}
+  cardColor: {r: 0.91764706, g: 0.26995146, b: 0.19215682, a: 1}
