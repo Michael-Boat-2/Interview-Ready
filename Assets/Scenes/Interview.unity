@@ -4935,6 +4935,8 @@ MonoBehaviour:
   cardButtonPrefab: {fileID: 4078870474625791471, guid: 44e3db00c6fd3f24cb15d513cf3bc92c, type: 3}
   playHandButton: {fileID: 1476144501}
   playHandButtonLabel: {fileID: 73418052}
+  discardButton: {fileID: 696422159}
+  discardButtonLabel: {fileID: 1009058974}
   mouseUIPanel: {fileID: 258060454}
   selectedOutlineColor: {r: 1, g: 0.9, b: 0.1, a: 1}
   defaultOutlineColor: {r: 0, g: 0, b: 0, a: 0}

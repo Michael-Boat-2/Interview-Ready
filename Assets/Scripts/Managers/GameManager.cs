@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Cards;
 using Interview;
 using UnityEngine;
@@ -106,9 +107,9 @@ namespace Managers
         {
         
         }
-    
-    
-        public void StartInterview()
+
+
+        private void StartInterview()
         {
             Debug.Log("Interview BEGINS");
             OnBattleMessage?.Invoke("Interview starts!");
@@ -118,20 +119,20 @@ namespace Managers
             interviewerDoubt?.ResetForNewInterview();
         
             // Hook filled images up to stat events
-            if (confidenceFill != null && playerConfidence != null)
+            if (confidenceFill && playerConfidence)
             {
                 confidenceFill.fillAmount = playerConfidence.ConfidencePercentage;
                 playerConfidence.OnConfidenceChanged += () => confidenceFill.fillAmount = playerConfidence.ConfidencePercentage;
             }
 
-            if (doubtFill != null && interviewerDoubt != null)
+            if (doubtFill && interviewerDoubt)
             {
                 doubtFill.fillAmount = interviewerDoubt.DoubtPercentage;
                 interviewerDoubt.OnDoubtChanged += () => doubtFill.fillAmount = interviewerDoubt.DoubtPercentage;
             }
 
             // Setup deck with test cards
-            if (deckManager != null && testStartingDeck.Count > 0)
+            if (deckManager && testStartingDeck.Count > 0)
             {
                 deckManager.SetupDeck(testStartingDeck);
                 deckManager.DrawStartingHand();
@@ -315,6 +316,8 @@ namespace Managers
         public void DiscardSelectedHand()
         {
             
+            //Discards will have an extra layer of control, like max discards per turn or something
+            
              if (!isBattleActive)
              {
                  Debug.Log("No active interview!");
@@ -333,49 +336,27 @@ namespace Managers
                  return;
              }
 
-             // Total up all effects
-             int totalDoubtDamage = 0;
-             int totalComposureGain = 0;
-             List<string> playedNames = new List<string>();
+             var selectedCards = GetSelectedCards();
+             var discardedNames = selectedCards.Select(card => card.cardName).ToList();
 
-             List<SkillCardData> selectedCards = GetSelectedCards();
-             foreach (SkillCardData card in selectedCards)
-             {
-                 playedNames.Add(card.cardName);
-                 AccumulateCardEffect(card, ref totalDoubtDamage, ref totalComposureGain);
-             }
+             //Discard
+             var summary = $"Discarded: {string.Join(", ", discardedNames)}";
 
-             // Apply totalled effects
-             string summary = $"Played: {string.Join(", ", playedNames)}";
-
-             if (totalDoubtDamage > 0)
-             {
-                 interviewerDoubt?.ReduceDoubt(totalDoubtDamage);
-                 summary += $"  |  -{totalDoubtDamage} Interviewer Doubt";
-             }
-
-             if (totalComposureGain > 0)
-             {
-                 playerConfidence?.AddComposure(totalComposureGain);
-                 summary += $"  |  +{totalComposureGain} Composure";
-             }
-
+     
              OnBattleMessage?.Invoke(summary);
              Debug.Log(summary);
 
-             // Discard played cards — sort descending so removing higher indices first doesn't shift lower ones
+             // Discard played cards
              selectedHandIndices.Sort((a, b) => b.CompareTo(a));
-             foreach (int i in selectedHandIndices)
-                 deckManager.PlayCardAt(i);
+             foreach (var i in selectedHandIndices)
+                 deckManager.DiscardCardAt(i);
 
              selectedHandIndices.Clear();
              OnSelectedHandChanged?.Invoke(new List<SkillCardData>());
 
              CheckBattleState();
 
-             // Hand was accepted — switch to enemy turn
-             if (isBattleActive)
-                 turnManager?.EndPlayerTurn();
+             // Discard was made
             
         }
     
@@ -445,11 +426,11 @@ namespace Managers
     
         private void CheckBattleState()
         {
-            if (interviewerDoubt != null && interviewerDoubt.CurrentDoubt <= 0)
+            if (interviewerDoubt && interviewerDoubt.CurrentDoubt <= 0)
             {
                 WinInterview();
             }
-            else if (playerConfidence != null && playerConfidence.CurrentConfidence <= 0)
+            else if (playerConfidence && playerConfidence.CurrentConfidence <= 0)
             {
                 LoseInterview();
             }
@@ -475,7 +456,7 @@ namespace Managers
             OnInterviewWon?.Invoke();
         
             // Disable further turn actions
-            if (turnManager != null)
+            if (turnManager)
             {
                 // You might want to disable turn switching here
             }
@@ -491,7 +472,7 @@ namespace Managers
             OnInterviewLost?.Invoke();
         
             // Disable further turn actions
-            if (turnManager != null)
+            if (turnManager)
             {
                 // You might want to disable turn switching here
             }
@@ -515,19 +496,19 @@ namespace Managers
             if (deckManager == null) return new List<SkillCardData>();
             return deckManager.Hand;
         }
-    
-        void OnDestroy()
+
+        private void OnDestroy()
         {
-            if (turnManager != null)
+            if (turnManager)
             {
                 turnManager.OnPlayerTurnStart -= OnPlayerTurnStarted;
                 turnManager.OnEnemyTurnStart -= OnEnemyTurnStarted;
             }
         
-            if (playerConfidence != null)
+            if (playerConfidence)
                 playerConfidence.OnPlayerDied -= OnPlayerDied;
         
-            if (interviewerDoubt != null)
+            if (interviewerDoubt)
                 interviewerDoubt.OnInterviewerDefeated -= OnInterviewerDefeated;
         }
     

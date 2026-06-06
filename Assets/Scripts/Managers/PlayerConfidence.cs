@@ -10,7 +10,7 @@ namespace Managers
     
         [Header("Starting Values")]
         [SerializeField] private int maxConfidence = 30;
-        [SerializeField] private int startingConfidence = 20;
+        [SerializeField] private int startingConfidence = 30;
     
         [Header("Composure (Shield)")]
         [SerializeField] private int currentComposure;
@@ -50,12 +50,12 @@ namespace Managers
         {
             if (damage <= 0) return;
         
-            int remainingDamage = damage;
+            var remainingDamage = damage;
         
             // Damage composure first
             if (currentComposure > 0)
             {
-                int composureAbsorb = Mathf.Min(currentComposure, remainingDamage);
+                var composureAbsorb = Mathf.Min(currentComposure, remainingDamage);
                 currentComposure -= composureAbsorb;
                 remainingDamage -= composureAbsorb;
                 OnComposureChanged?.Invoke();

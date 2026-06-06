@@ -20,8 +20,8 @@ namespace Interview
         public System.Action OnEnemyTurnStart;
     
         public TurnPhase CurrentPhase => currentPhase;
-    
-        void Start()
+
+        private void Start()
         {
             // Start the game with player turn
             StartPlayerTurn();
@@ -49,14 +49,14 @@ namespace Interview
         {
             currentPhase = TurnPhase.PlayerTurn;
             OnPlayerTurnStart?.Invoke();
-            Debug.Log("=== PLAYER TURN ===");
+            Debug.Log("Player started turn");
         }
     
         private void StartEnemyTurn()
         {
             currentPhase = TurnPhase.EnemyTurn;
             OnEnemyTurnStart?.Invoke();
-            Debug.Log("=== ENEMY TURN ===");
+            Debug.Log("Enemy started turn");
         }
     }
 }

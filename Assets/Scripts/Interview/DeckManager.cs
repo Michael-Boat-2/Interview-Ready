@@ -12,6 +12,7 @@ namespace Interview
         /// <summary>
         /// 
         /// </summary>
+        
         [Header("Deck Configuration")]
         [SerializeField] private List<SkillCardData> allOwnedCards = new List<SkillCardData>();
         [SerializeField] private int startingHandSize = 5;
@@ -75,7 +76,7 @@ namespace Interview
                 ReshuffleFromDiscard();
             }
         
-            SkillCardData drawnCard = drawPile[0];
+            var drawnCard = drawPile[0];
             drawPile.RemoveAt(0);
             hand.Add(drawnCard);
         
@@ -126,7 +127,8 @@ namespace Interview
         }
     
 
-        // Play a card by index — safe for duplicate cards since it uses RemoveAt
+        // Play a card by index
+        // safe for duplicate cards since it uses RemoveAt
         public bool PlayCardAt(int index)
         {
             if (index < 0 || index >= hand.Count)
@@ -135,7 +137,7 @@ namespace Interview
                 return false;
             }
 
-            SkillCardData card = hand[index];
+            var card = hand[index];
             hand.RemoveAt(index);
             discardPile.Add(card);
 
@@ -145,6 +147,30 @@ namespace Interview
             Debug.Log($"Played card at [{index}]: {card.cardName}. Moved to discard.");
             return true;
         }
+
+
+        public bool DiscardCardAt(int index)
+        {
+            
+            if (index < 0 || index >= hand.Count)
+            {
+                Debug.LogWarning("Invalid hand index!");
+                return false;
+            }
+
+            var card = hand[index];
+            hand.RemoveAt(index);
+            discardPile.Add(card);
+
+            OnHandChanged?.Invoke(hand);
+            OnDiscardPileCountChanged?.Invoke(discardPile.Count);
+
+            Debug.Log($"Discarded card at [{index}]: {card.cardName}. Now in Discard Pile.");
+            return true;
+            
+        }
+        
+        
     
         // Reshuffle discard pile into draw pile
         private void ReshuffleFromDiscard()
