@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Cards;
 using Managers;
 using UnityEngine;
@@ -20,6 +21,11 @@ namespace Interview
         [SerializeField] private Button playHandButton;     // The confirm button 
         [SerializeField] private TMPro.TextMeshProUGUI playHandButtonLabel; // Optional label 
 
+        [Header("Discard Button")]
+        [SerializeField] private Button discardButton;      // Discard button
+        [SerializeField] private TMPro.TextMeshProUGUI discardButtonLabel; // Optional label
+        
+        
         [Header("Hover Panel")]
         [SerializeField] private MouseUI mouseUIPanel;
 
@@ -32,53 +38,56 @@ namespace Interview
 
         void Awake()
         {
-            if (deckManager == null)
+            if (!deckManager)
                 deckManager = FindObjectOfType<DeckManager>();
 
-            if (gameManager == null)
+            if (!gameManager)
                 gameManager = FindObjectOfType<GameManager>();
 
-            if (deckManager != null)
+            if (deckManager)
                 deckManager.OnHandChanged += UpdateDeckDisplay;
 
-            if (gameManager != null)
+            if (gameManager)
                 gameManager.OnSelectedHandChanged += OnSelectionChanged;
 
-            // Wire up the Play Hand button
-            if (playHandButton != null)
+            // Wire up the Play Hand button, to answer questions after selecting some cards
+            if (playHandButton)
                 playHandButton.onClick.AddListener(OnPlayHandClicked);
+            
+            if(discardButton)
+                discardButton.onClick.AddListener(OnDiscardClicked);
 
             // Start with button disabled until player selects cards
             SetPlayHandButtonState(false);
         }
 
          //Update hand display
-        void UpdateDeckDisplay(List<SkillCardData> hand)
+         private void UpdateDeckDisplay(List<SkillCardData> hand)
         {
             currentHand = hand;
 
             // Clear old buttons
-            foreach (Button btn in cardButtons)
+            foreach (var btn in cardButtons.Where(btn => btn))
             {
-                if (btn != null)
-                    Destroy(btn.gameObject);
+                Destroy(btn.gameObject);
             }
+            
             cardButtons.Clear();
 
-            for (int i = 0; i < hand.Count && i < 8; i++)
+            for (var i = 0; i < hand.Count && i < 8; i++)
             {
                 SkillCardData card = hand[i];
-                GameObject newButtonObj = Instantiate(cardButtonPrefab, handPanel);
-                Button newButton = newButtonObj.GetComponent<Button>();
+                var newButtonObj = Instantiate(cardButtonPrefab, handPanel);
+                var newButton = newButtonObj.GetComponent<Button>();
                     
 
                 // Store card reference
-                CardButtonData buttonData = newButtonObj.GetComponent<CardButtonData>();
+                var buttonData = newButtonObj.GetComponent<CardButtonData>();
                 
                 if (!buttonData)
                     buttonData = newButtonObj.AddComponent<CardButtonData>();
                 
-                Image fillImage = buttonData.cardImage;
+                var fillImage = buttonData.cardImage;
 
                 if (fillImage)
                 {
@@ -90,7 +99,7 @@ namespace Interview
                 buttonData.SetCard(card);
 
                 // Click toggles selection — capture index so duplicates are treated as separate slots
-                int capturedIndex = i;
+                var capturedIndex = i;
                 newButton.onClick.AddListener(() => OnCardClicked(capturedIndex, newButtonObj));
 
                 AddHoverEvents(newButtonObj, card);
@@ -116,10 +125,10 @@ namespace Interview
             RefreshSelectionVisuals();
             SetPlayHandButtonState(selected.Count > 0);
 
-            if (playHandButtonLabel != null)
+            if (playHandButtonLabel)
                 playHandButtonLabel.text = selected.Count > 0
-                    ? $"Play Hand ({selected.Count}/{gameManager.MaxSelectedCards})"
-                    : "Play Hand";
+                    ? $"Answer Question ({selected.Count}/{gameManager.MaxSelectedCards})"
+                    : "Answer Question";
         }
 
         private void RefreshSelectionVisuals()
@@ -163,15 +172,32 @@ namespace Interview
 
         private void OnPlayHandClicked()
         {
-            if (gameManager != null)
+            if (gameManager)
                 gameManager.PlaySelectedHand();
         }
+        
+        private void OnDiscardClicked()
+        {
+            if (gameManager)
+            {
+                gameManager.DiscardSelectedHand();
+            }
+        }
 
+        
+        //Disable and enable answer question and discard idea buttons
         private void SetPlayHandButtonState(bool interactable)
         {
-            if (playHandButton != null)
-                playHandButton.interactable = interactable;
+            if (!playHandButton) return;
+            
+            playHandButton.interactable = interactable;
+            discardButton.interactable = interactable;
         }
+
+
+      
+        
+        
         
   
         /// <summary>

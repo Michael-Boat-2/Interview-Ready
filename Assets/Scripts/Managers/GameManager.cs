@@ -102,7 +102,7 @@ namespace Managers
         }
 
         // Update is called once per frame
-        void Update()
+        private void Update()
         {
         
         }
@@ -212,55 +212,68 @@ namespace Managers
         {
             if (!isBattleActive)
             {
-                Debug.Log("No active interview!");
+                Debug.Log("No active interview");
                 return;
             }
 
             if (turnManager.CurrentPhase != TurnPhase.PlayerTurn)
             {
-                OnBattleMessage?.Invoke("Wait for your turn!");
+                OnBattleMessage?.Invoke("Wait for your turn");
                 return;
             }
 
             if (selectedHandIndices.Count == 0)
             {
-                OnBattleMessage?.Invoke("Select at least one card to play!");
+                OnBattleMessage?.Invoke("Select at least one card to play");
                 return;
             }
 
             // Total up all effects
-            int totalDoubtDamage = 0;
-            int totalComposureGain = 0;
-            List<string> playedNames = new List<string>();
+            var totalDoubtDamage = 0;
+            var totalComposureGain = 0;
+            var playedNames = new List<string>();
 
-            List<SkillCardData> selectedCards = GetSelectedCards();
-            foreach (SkillCardData card in selectedCards)
+            var selectedCards = GetSelectedCards();
+            
+            
+            //adding names of all selected cards
+            foreach (var card in selectedCards)
             {
                 playedNames.Add(card.cardName);
+                
+                //pass by reference
                 AccumulateCardEffect(card, ref totalDoubtDamage, ref totalComposureGain);
             }
-
+            
+            
             // Apply totalled effects
-            string summary = $"Played: {string.Join(", ", playedNames)}";
+            
+            //summary string of all played cards
+            var summary = $"Played: {string.Join(", ", playedNames)}";
 
+            //reduce interviewer doubt by total doubt damage amount
             if (totalDoubtDamage > 0)
             {
                 interviewerDoubt?.ReduceDoubt(totalDoubtDamage);
-                summary += $"  |  -{totalDoubtDamage} Interviewer Doubt";
+                summary += $"  && reduced interviewer doubt by {totalDoubtDamage} ";
             }
 
             if (totalComposureGain > 0)
             {
                 playerConfidence?.AddComposure(totalComposureGain);
-                summary += $"  |  +{totalComposureGain} Composure";
+                summary += $"  && gained Composure of {totalComposureGain} ";
             }
 
+            //battle message event evoked
             OnBattleMessage?.Invoke(summary);
             Debug.Log(summary);
-
-            // Discard played cards — sort descending so removing higher indices first doesn't shift lower ones
+            
+            
+            // Discard played cards into the discard pile,
+            // sort descending so removing higher indices first doesn't shift lower ones
             selectedHandIndices.Sort((a, b) => b.CompareTo(a));
-            foreach (int i in selectedHandIndices)
+            
+            foreach (var i in selectedHandIndices)
                 deckManager.PlayCardAt(i);
 
             selectedHandIndices.Clear();
@@ -268,12 +281,14 @@ namespace Managers
 
             CheckBattleState();
 
-            // Hand was accepted — switch to enemy turn
+            // Hand was accepted, switch to enemy turn
             if (isBattleActive)
                 turnManager?.EndPlayerTurn();
         }
 
-    
+        
+        
+        //Adds card effects
         private void AccumulateCardEffect(SkillCardData card, ref int doubtDamage, ref int composureGain)
         {
             switch (card.cardType)
@@ -283,8 +298,9 @@ namespace Managers
                     break;
 
                 case CardType.Soft:
+                    //only add to composure for now
                     composureGain += card.value;
-                    doubtDamage += Mathf.Max(1, card.value / 2); // Soft skills still chip away at doubt
+                    //doubtDamage += Mathf.Max(1, card.value / 2); // Soft skills still chip away at doubt
                     break;
 
                 case CardType.Access:
@@ -293,6 +309,74 @@ namespace Managers
                     composureGain += Mathf.FloorToInt(card.value * 0.4f);
                     break;
             }
+        }
+
+
+        public void DiscardSelectedHand()
+        {
+            
+             if (!isBattleActive)
+             {
+                 Debug.Log("No active interview!");
+                 return;
+             }
+
+             if (turnManager.CurrentPhase != TurnPhase.PlayerTurn)
+             {
+                 OnBattleMessage?.Invoke("Wait for your turn!");
+                 return;
+             }
+
+             if (selectedHandIndices.Count == 0)
+             {
+                 OnBattleMessage?.Invoke("Select at least one card to discard");
+                 return;
+             }
+
+             // Total up all effects
+             int totalDoubtDamage = 0;
+             int totalComposureGain = 0;
+             List<string> playedNames = new List<string>();
+
+             List<SkillCardData> selectedCards = GetSelectedCards();
+             foreach (SkillCardData card in selectedCards)
+             {
+                 playedNames.Add(card.cardName);
+                 AccumulateCardEffect(card, ref totalDoubtDamage, ref totalComposureGain);
+             }
+
+             // Apply totalled effects
+             string summary = $"Played: {string.Join(", ", playedNames)}";
+
+             if (totalDoubtDamage > 0)
+             {
+                 interviewerDoubt?.ReduceDoubt(totalDoubtDamage);
+                 summary += $"  |  -{totalDoubtDamage} Interviewer Doubt";
+             }
+
+             if (totalComposureGain > 0)
+             {
+                 playerConfidence?.AddComposure(totalComposureGain);
+                 summary += $"  |  +{totalComposureGain} Composure";
+             }
+
+             OnBattleMessage?.Invoke(summary);
+             Debug.Log(summary);
+
+             // Discard played cards — sort descending so removing higher indices first doesn't shift lower ones
+             selectedHandIndices.Sort((a, b) => b.CompareTo(a));
+             foreach (int i in selectedHandIndices)
+                 deckManager.PlayCardAt(i);
+
+             selectedHandIndices.Clear();
+             OnSelectedHandChanged?.Invoke(new List<SkillCardData>());
+
+             CheckBattleState();
+
+             // Hand was accepted — switch to enemy turn
+             if (isBattleActive)
+                 turnManager?.EndPlayerTurn();
+            
         }
     
         private void OnPlayerTurnStarted()
