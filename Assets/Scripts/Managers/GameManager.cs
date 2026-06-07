@@ -159,7 +159,8 @@ namespace Managers
             }
             
 
-            var ownedCards = DeckManager.Instance ? DeckManager.Instance.GetAllOwnedCards() : null;
+            //var ownedCards = DeckManager.Instance ? DeckManager.Instance.GetAllOwnedCards() : null;
+            var ownedCards = deckManager ? deckManager.GetAllOwnedCards() : null;
             
             // Setup deck with test cards
             if (ownedCards is { Count: > 0 })

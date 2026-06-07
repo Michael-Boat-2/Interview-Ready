@@ -3,16 +3,20 @@ using UnityEngine;
 using Cards;
 using System;
 using Random = UnityEngine.Random;
+using Managers;
 
 namespace Interview
 {
     public class DeckManager : MonoBehaviour
     {
         
-        public static DeckManager Instance{get; private set;}
+        //public static DeckManager Instance{get; private set;}
+        
+        [Header("Player Deck Data")]
+        [SerializeField] private PlayerDeckData playerDeckData;
         
         [Header("Deck Configuration")]
-        [SerializeField] private List<SkillCardData> allOwnedCards = new List<SkillCardData>();
+        //[SerializeField] private List<SkillCardData> allOwnedCards = new List<SkillCardData>();
         [SerializeField] private int startingHandSize = 5;
     
         [Header("Runtime")]
@@ -32,25 +36,13 @@ namespace Interview
         public int DiscardPileCount => discardPile.Count;
 
 
-        private void Awake()
-        {
-            
-            //Making this a singleton instance that persists across all scenes
-            if (Instance && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
 
 
         // Setup the deck with player's collected cards
         public void SetupDeck(List<SkillCardData> ownedCards)
         {
-            allOwnedCards = new List<SkillCardData>(ownedCards);
+            //allOwnedCards = new List<SkillCardData>(ownedCards);
+            
             drawPile = new List<SkillCardData>(ownedCards);
             hand.Clear();
             discardPile.Clear();
@@ -203,7 +195,8 @@ namespace Interview
         //Add cards to owned cards
         public void AddCardToOwned(SkillCardData card)
         {
-            allOwnedCards.Add(card);
+            if (playerDeckData)
+                playerDeckData.AddCard(card);
             
             Debug.Log($"Adding card {card.cardName} to owned cards");
         }
@@ -222,8 +215,11 @@ namespace Interview
         // Remove a card from the deck
         public void RemoveCardFromDeck(SkillCardData card)
         {
-            if (allOwnedCards.Contains(card))
+            /*if (allOwnedCards.Contains(card))
                 allOwnedCards.Remove(card);
+                */
+            
+            playerDeckData.RemoveCard(card);
         
             if (drawPile.Contains(card))
                 drawPile.Remove(card);
@@ -241,7 +237,7 @@ namespace Interview
         // Reset for new interview (keeps cards but reshuffles)
         public void ResetForNewInterview()
         {
-            drawPile = new List<SkillCardData>(allOwnedCards);
+            //drawPile = new List<SkillCardData>(allOwnedCards);
             hand.Clear();
             discardPile.Clear();
             ShuffleDrawPile();
@@ -256,7 +252,7 @@ namespace Interview
         // Get all owned cards (for save/display)
         public List<SkillCardData> GetAllOwnedCards()
         {
-            return new List<SkillCardData>(allOwnedCards);
+            return playerDeckData ? playerDeckData.ownedCards : new List<SkillCardData>();
         }
     }
 }
