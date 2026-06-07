@@ -9,23 +9,38 @@ namespace Interview
 {
     public class DeckDisplay : MonoBehaviour
     {
+        
+        //References to game and deck manager
         [Header("References")]
         [SerializeField] private DeckManager deckManager;
         [SerializeField] private GameManager gameManager;
 
+        // Parent for card buttons
         [Header("Hand Panel")]
-        [SerializeField] private Transform handPanel;       // Parent for card buttons
+        [SerializeField] private Transform handPanel;     
         [SerializeField] private GameObject cardButtonPrefab;
 
+        
+        //Confirm a hand combination
         [Header("Play Hand Button")]
-        [SerializeField] private Button playHandButton;     // The confirm button 
-        [SerializeField] private TMPro.TextMeshProUGUI playHandButtonLabel; // Optional label 
-
+        [SerializeField] private Button playHandButton;  
+        [SerializeField] private TMPro.TextMeshProUGUI playHandButtonLabel;
+        
+        // Discard button
         [Header("Discard Button")]
-        [SerializeField] private Button discardButton;      // Discard button
-        [SerializeField] private TMPro.TextMeshProUGUI discardButtonLabel; // Optional label
+        [SerializeField] private Button discardButton;    
+        [SerializeField] private TMPro.TextMeshProUGUI discardButtonLabel; 
+        
+        //Discard Counting
+        [Header("Discard Counter")]
+        [SerializeField] private TMPro.TextMeshProUGUI discardCounterLabel;
         
         
+        //Manually end a turn
+        [Header("End Turn Button")]
+        [SerializeField] private Button endTurnButton;
+        
+        //Mouse panel for extra information
         [Header("Hover Panel")]
         [SerializeField] private MouseUI mouseUIPanel;
 
@@ -36,13 +51,13 @@ namespace Interview
         [SerializeField]private List<Button> cardButtons = new List<Button>();
         private List<SkillCardData> currentHand = new List<SkillCardData>();
 
-        void Awake()
+        private void Awake()
         {
             if (!deckManager)
-                deckManager = FindObjectOfType<DeckManager>();
+                deckManager = FindFirstObjectByType<DeckManager>();
 
             if (!gameManager)
-                gameManager = FindObjectOfType<GameManager>();
+                gameManager = FindFirstObjectByType<GameManager>();
 
             if (deckManager)
                 deckManager.OnHandChanged += UpdateDeckDisplay;
@@ -56,11 +71,33 @@ namespace Interview
             
             if(discardButton)
                 discardButton.onClick.AddListener(OnDiscardClicked);
+            
+            if (endTurnButton)
+                endTurnButton.onClick.AddListener(OnEndTurnClicked);
 
             // Start with button disabled until player selects cards
             SetPlayHandButtonState(false);
+            SetDiscardButtonState(false);
         }
 
+
+        //Update endTurnButton here
+        private void Update()
+        {
+            if (endTurnButton && gameManager)
+                endTurnButton.interactable = gameManager.IsPlayerTurn() && gameManager.IsBattleActive();
+            
+            
+            if (discardCounterLabel && gameManager)
+            {
+                int used = gameManager.DiscardsUsedThisTurn;
+                int max = gameManager.MaxDiscardsPerTurn; // we need to expose this too
+                discardCounterLabel.text = $"Discards: {used}/{max}";
+            }
+            
+        }
+
+        
          //Update hand display
          private void UpdateDeckDisplay(List<SkillCardData> hand)
         {
@@ -124,6 +161,7 @@ namespace Interview
         {
             RefreshSelectionVisuals();
             SetPlayHandButtonState(selected.Count > 0);
+            SetDiscardButtonState(selected.Count == 1);
 
             if (playHandButtonLabel)
                 playHandButtonLabel.text = selected.Count > 0
@@ -183,6 +221,12 @@ namespace Interview
                 gameManager.DiscardSelectedHand();
             }
         }
+        
+        private void OnEndTurnClicked()
+        {
+            if (gameManager)
+                gameManager.EndPlayerTurn();
+        }
 
         
         //Disable and enable answer question and discard idea buttons
@@ -191,9 +235,16 @@ namespace Interview
             if (!playHandButton) return;
             
             playHandButton.interactable = interactable;
-            discardButton.interactable = interactable;
+            //discardButton.interactable = interactable;
         }
 
+
+        private void SetDiscardButtonState(bool interactable)
+        {
+            if (!discardButton) return;
+            
+            discardButton.interactable = interactable;
+        }
 
       
         

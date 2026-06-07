@@ -12,6 +12,9 @@ namespace Interview
         /// <summary>
         /// 
         /// </summary>
+        ///
+        
+        public static DeckManager Instance{get; private set;}
         
         [Header("Deck Configuration")]
         [SerializeField] private List<SkillCardData> allOwnedCards = new List<SkillCardData>();
@@ -32,7 +35,23 @@ namespace Interview
         public int HandCount => hand.Count;
         public int DrawPileCount => drawPile.Count;
         public int DiscardPileCount => discardPile.Count;
-    
+
+
+        private void Awake()
+        {
+            
+            //Making this a singleton instance that persists across all scenes
+            if (Instance && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+
+
         // Setup the deck with player's collected cards
         public void SetupDeck(List<SkillCardData> ownedCards)
         {
@@ -184,17 +203,28 @@ namespace Interview
         
             Debug.Log("Reshuffled discard pile into draw pile");
         }
+
+
+        //Add cards to owned cards
+        public void AddCardToOwned(SkillCardData card)
+        {
+            allOwnedCards.Add(card);
+            
+            Debug.Log($"Adding card {card.cardName} to owned cards");
+        }
+        
     
         // Add a new card to the deck (when acquiring skills)
-        public void AddCardToDeck(SkillCardData newCard)
+        /*public void AddCardToDeck(SkillCardData newCard)
         {
             allOwnedCards.Add(newCard);
             discardPile.Add(newCard);
         
             Debug.Log($"Added new card to deck: {newCard.cardName}");
-        }
+        }*/
     
-        // Remove a card from the deck (rare)
+        
+        // Remove a card from the deck
         public void RemoveCardFromDeck(SkillCardData card)
         {
             if (allOwnedCards.Contains(card))

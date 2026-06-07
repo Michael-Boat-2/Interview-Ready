@@ -14,6 +14,7 @@ namespace Managers
     
         [Header("Composure (Shield)")]
         [SerializeField] private int currentComposure;
+        [SerializeField] private int maxComposure = 20;
     
         // Events for UI and other systems
         public System.Action OnConfidenceChanged;
@@ -23,6 +24,8 @@ namespace Managers
         public int CurrentConfidence => currentConfidence;
         public int MaxConfidence => maxConfidence;
         public int CurrentComposure => currentComposure;
+        
+        public int MaxComposure => maxComposure;
         public float ConfidencePercentage => (float)currentConfidence / maxConfidence;
     
         // Initialize or reset the player

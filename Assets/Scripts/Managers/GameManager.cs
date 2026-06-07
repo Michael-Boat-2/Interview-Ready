@@ -10,6 +10,13 @@ namespace Managers
 {
     public class GameManager : MonoBehaviour
     {
+        
+        [Header("Round Settings")]
+        [SerializeField] private int maxRounds = 3;
+        private int currentRound = 0;
+
+        [Header("Interview Questions")]
+        [SerializeField] private List<string> interviewQuestions = new List<string>();
     
         [Header("References")]
         [SerializeField] private TurnManager turnManager;
@@ -28,6 +35,12 @@ namespace Managers
     
         [Header("Hand Settings")]
         [SerializeField] private int maxSelectedCards = 5;
+
+        [Header("Discard Settings")] 
+        [SerializeField]private int maxDiscardsPerTurn = 1;
+        public int MaxDiscardsPerTurn => maxDiscardsPerTurn;
+        private int _discardsUsedThisTurn;
+        public int DiscardsUsedThisTurn => _discardsUsedThisTurn;
     
       
         [Header("Test Cards")]
@@ -54,7 +67,7 @@ namespace Managers
     
     
         // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
+        private void Start()
         {
             // Find references if not assigned
             if (!turnManager)
@@ -81,16 +94,16 @@ namespace Managers
            
 
             // Subscribe to events
-            if (turnManager != null)
+            if (turnManager)
             {
                 turnManager.OnPlayerTurnStart += OnPlayerTurnStarted;
                 turnManager.OnEnemyTurnStart += OnEnemyTurnStarted;
             }
 
-            if (playerConfidence != null)
+            if (playerConfidence)
                 playerConfidence.OnPlayerDied += OnPlayerDied;
 
-            if (interviewerDoubt != null)
+            if (interviewerDoubt)
                 interviewerDoubt.OnInterviewerDefeated += OnInterviewerDefeated;
 
 
@@ -101,18 +114,17 @@ namespace Managers
 
 
         }
-
-        // Update is called once per frame
-        private void Update()
-        {
         
-        }
-
 
         private void StartInterview()
         {
             Debug.Log("Interview BEGINS");
             OnBattleMessage?.Invoke("Interview starts!");
+            
+            currentRound = 0;
+            if (interviewQuestions.Count > 0)
+                OnBattleMessage?.Invoke($"Q: {interviewQuestions[0]}");
+            
         
             // Reset all systems
             playerConfidence?.ResetForNewInterview();
@@ -131,15 +143,17 @@ namespace Managers
                 interviewerDoubt.OnDoubtChanged += () => doubtFill.fillAmount = interviewerDoubt.DoubtPercentage;
             }
 
+            var ownedCards = DeckManager.Instance ? DeckManager.Instance.GetAllOwnedCards() : null;
+            
             // Setup deck with test cards
-            if (deckManager && testStartingDeck.Count > 0)
+            if (ownedCards is { Count: > 0 })
             {
                 deckManager.SetupDeck(testStartingDeck);
                 deckManager.DrawStartingHand();
             }
             else
             {
-                Debug.LogWarning("No test cards found! Create test cards or assign them in Inspector.");
+                Debug.LogWarning("No owned cards found! Create test cards or assign them in Inspector.");
             }
         
             isBattleActive = true;
@@ -316,8 +330,6 @@ namespace Managers
         public void DiscardSelectedHand()
         {
             
-            //Discards will have an extra layer of control, like max discards per turn or something
-            
              if (!isBattleActive)
              {
                  Debug.Log("No active interview!");
@@ -329,46 +341,68 @@ namespace Managers
                  OnBattleMessage?.Invoke("Wait for your turn!");
                  return;
              }
-
-             if (selectedHandIndices.Count == 0)
+             
+             
+             if (_discardsUsedThisTurn >= maxDiscardsPerTurn)
              {
-                 OnBattleMessage?.Invoke("Select at least one card to discard");
+                 OnBattleMessage?.Invoke("You've already discarded this turn!");
                  return;
              }
 
-             var selectedCards = GetSelectedCards();
-             var discardedNames = selectedCards.Select(card => card.cardName).ToList();
+             if (selectedHandIndices.Count != 1)
+             {
+                 OnBattleMessage?.Invoke("Select only one card to discard");
+                 return;
+             }
+             
+             var index = selectedHandIndices[0];
+             var discardedCard = deckManager.Hand[index];
 
-             //Discard
-             var summary = $"Discarded: {string.Join(", ", discardedNames)}";
-
-     
-             OnBattleMessage?.Invoke(summary);
-             Debug.Log(summary);
-
-             // Discard played cards
-             selectedHandIndices.Sort((a, b) => b.CompareTo(a));
-             foreach (var i in selectedHandIndices)
-                 deckManager.DiscardCardAt(i);
-
+             // Discard the card and pay composure cost of 2
+             deckManager.DiscardCardAt(index);
+             playerConfidence?.TakeDamage(2);  
+             
+             _discardsUsedThisTurn++;
+             
+       
+             //Draw a new card
+             deckManager.DrawCard();
+            
+             
+             //Clear selections
              selectedHandIndices.Clear();
              OnSelectedHandChanged?.Invoke(new List<SkillCardData>());
 
              CheckBattleState();
 
-             // Discard was made
+             
+             //Discard Debug
+             var summary = $"Discarded: {string.Join(", ", discardedCard.cardName)}";
+             OnBattleMessage?.Invoke(summary);
+             Debug.Log(summary);
+             
             
         }
     
         private void OnPlayerTurnStarted()
         {
             if (!isBattleActive) return;
-
+            
+            if (isBattleActive && currentRound < interviewQuestions.Count)
+            {
+                // Display next interview question
+                OnBattleMessage?.Invoke($"Q: {interviewQuestions[currentRound]}");
+            }
+            
             selectedHandIndices.Clear();
             OnSelectedHandChanged?.Invoke(new List<SkillCardData>());
 
+
+            //discards limit kept at one
+            _discardsUsedThisTurn = 0;
+
             // Refill hand at the start of each player turn
-            if (deckManager != null)
+            if (deckManager)
             {
                 while (deckManager.HandCount < 5)
                 {
@@ -378,6 +412,7 @@ namespace Managers
 
             Debug.Log("Your turn — select up to 5 cards and play your hand!");
             OnBattleMessage?.Invoke("Your turn. Build your hand, then play it.");
+            
         }
     
     
@@ -409,8 +444,31 @@ namespace Managers
         
             yield return new WaitForSeconds(0.3f);
 
-            if (isBattleActive && playerConfidence.CurrentConfidence > 0)
+            if (isBattleActive && playerConfidence && playerConfidence.CurrentConfidence > 0)
                 turnManager?.EndEnemyTurn();
+            
+            
+            // increment round
+            
+            currentRound++;
+            
+            if (currentRound >= maxRounds && isBattleActive)
+            {
+                
+                OnBattleMessage?.Invoke("The interview is over, lets see if you convinced them! ...");
+                
+                yield return new WaitForSeconds(0.5f); 
+                
+                // Time's up, AND our interviewer still has doubt in our skills, player loses
+                if (interviewerDoubt && interviewerDoubt.CurrentDoubt > 0)
+                {
+                    OnBattleMessage?.Invoke("The interviewer was not convinced.");
+                    LoseInterview();
+                }
+              
+            }
+            
+            
         }
 
     
