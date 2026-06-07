@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Python
   m_EditorClassIdentifier: 
   cardName: Python
-  description: Python Skill
+  description: Python Skills
   cardType: 0
   value: 6
   cardIcon: {fileID: 766178034, guid: 6019df395f7fe9242aa7788547185ecf, type: 3}

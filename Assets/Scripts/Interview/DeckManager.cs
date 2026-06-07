@@ -9,11 +9,6 @@ namespace Interview
     public class DeckManager : MonoBehaviour
     {
         
-        /// <summary>
-        /// 
-        /// </summary>
-        ///
-        
         public static DeckManager Instance{get; private set;}
         
         [Header("Deck Configuration")]

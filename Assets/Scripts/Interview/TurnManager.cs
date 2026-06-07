@@ -21,12 +21,7 @@ namespace Interview
     
         public TurnPhase CurrentPhase => currentPhase;
 
-        private void Start()
-        {
-            // Start the game with player turn
-            StartPlayerTurn();
-        }
-    
+     
         // Call this when player ends their turn
         public void EndPlayerTurn()
         {

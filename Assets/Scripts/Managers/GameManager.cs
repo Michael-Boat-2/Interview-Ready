@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,6 +6,8 @@ using Cards;
 using Interview;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using Random = UnityEngine.Random;
 
 namespace Managers
 {
@@ -12,11 +15,15 @@ namespace Managers
     {
         
         [Header("Round Settings")]
-        [SerializeField] private int maxRounds = 3;
+        [SerializeField] private int maxRounds = 4;
         private int currentRound = 0;
-
+        
         [Header("Interview Questions")]
         [SerializeField] private List<string> interviewQuestions = new List<string>();
+        
+        [Header("Question Display")]
+        [SerializeField] private TextMeshProUGUI questionText;
+
     
         [Header("References")]
         [SerializeField] private TurnManager turnManager;
@@ -27,6 +34,7 @@ namespace Managers
     
         [Header("Debug UI")]
         [SerializeField] private Image confidenceFill;
+        [SerializeField] private Image composureFill;
         [SerializeField] private Image doubtFill;
 
         [Header("Enemy Settings")]
@@ -121,14 +129,13 @@ namespace Managers
             Debug.Log("Interview BEGINS");
             OnBattleMessage?.Invoke("Interview starts!");
             
-            currentRound = 0;
-            if (interviewQuestions.Count > 0)
-                OnBattleMessage?.Invoke($"Q: {interviewQuestions[0]}");
             
-        
             // Reset all systems
             playerConfidence?.ResetForNewInterview();
             interviewerDoubt?.ResetForNewInterview();
+            
+            
+            currentRound = 0;
         
             // Hook filled images up to stat events
             if (confidenceFill && playerConfidence)
@@ -142,14 +149,29 @@ namespace Managers
                 doubtFill.fillAmount = interviewerDoubt.DoubtPercentage;
                 interviewerDoubt.OnDoubtChanged += () => doubtFill.fillAmount = interviewerDoubt.DoubtPercentage;
             }
+            
+            
+            if (composureFill && playerConfidence)
+            {
+                composureFill.fillAmount = (float)playerConfidence.CurrentComposure / playerConfidence.MaxComposure;
+                playerConfidence.OnComposureChanged += () =>
+                    composureFill.fillAmount = (float)playerConfidence.CurrentComposure / playerConfidence.MaxComposure;
+            }
+            
 
             var ownedCards = DeckManager.Instance ? DeckManager.Instance.GetAllOwnedCards() : null;
             
             // Setup deck with test cards
             if (ownedCards is { Count: > 0 })
             {
+                deckManager.SetupDeck(ownedCards);
+                deckManager.DrawStartingHand();
+            }
+            else if (testStartingDeck is { Count: > 0 })
+            {
                 deckManager.SetupDeck(testStartingDeck);
                 deckManager.DrawStartingHand();
+                Debug.Log("Using test starting deck.");
             }
             else
             {
@@ -243,40 +265,27 @@ namespace Managers
                 return;
             }
 
-            // Total up all effects
-            var totalDoubtDamage = 0;
-            var totalComposureGain = 0;
-            var playedNames = new List<string>();
-
             var selectedCards = GetSelectedCards();
             
-            
-            //adding names of all selected cards
-            foreach (var card in selectedCards)
-            {
-                playedNames.Add(card.cardName);
-                
-                //pass by reference
-                AccumulateCardEffect(card, ref totalDoubtDamage, ref totalComposureGain);
-            }
+            //calculate card playing effects
+            CalculatePlayPreview(selectedCards, out var totalDoubtDamage, out var totalComposureGain);
             
             
-            // Apply totalled effects
-            
-            //summary string of all played cards
+            //summary string of all played card
+            var playedNames = selectedCards.Select(c => c.cardName).ToList();
             var summary = $"Played: {string.Join(", ", playedNames)}";
 
             //reduce interviewer doubt by total doubt damage amount
             if (totalDoubtDamage > 0)
             {
                 interviewerDoubt?.ReduceDoubt(totalDoubtDamage);
-                summary += $"  && reduced interviewer doubt by {totalDoubtDamage} ";
+                summary += $"  && reduced interviewer doubt by {totalDoubtDamage}";
             }
 
             if (totalComposureGain > 0)
             {
                 playerConfidence?.AddComposure(totalComposureGain);
-                summary += $"  && gained Composure of {totalComposureGain} ";
+                summary += $"  && gained Composure of {totalComposureGain}";
             }
 
             //battle message event evoked
@@ -302,30 +311,49 @@ namespace Managers
         }
 
         
-        
-        //Adds card effects
-        private void AccumulateCardEffect(SkillCardData card, ref int doubtDamage, ref int composureGain)
+        public void CalculatePlayPreview(List<SkillCardData> selectedCards, out int totalDoubtDamage, out int totalComposureGain)
         {
-            switch (card.cardType)
+            
+            //Calculates total damage and composure gain for a given selection
+            var techCount = selectedCards.Count(c =>
+                c.cardType is CardType.Technical or CardType.Access);
+            var softCount = selectedCards.Count(c =>
+                c.cardType is CardType.Soft or CardType.Access);
+
+            var techMult = GetSynergyMultiplier(techCount);
+            var softMult = GetSynergyMultiplier(softCount);
+
+            totalDoubtDamage = 0;
+            totalComposureGain = 0;
+
+            foreach (var card in selectedCards)
             {
-                case CardType.Technical:
-                    doubtDamage += card.value;
-                    break;
-
-                case CardType.Soft:
-                    //only add to composure for now
-                    composureGain += card.value;
-                    //doubtDamage += Mathf.Max(1, card.value / 2); // Soft skills still chip away at doubt
-                    break;
-
-                case CardType.Access:
-                    // Networking / access cards split the value between both stats
-                    doubtDamage += Mathf.CeilToInt(card.value * 0.6f);
-                    composureGain += Mathf.FloorToInt(card.value * 0.4f);
-                    break;
+                switch (card.cardType)
+                {
+                    case CardType.Technical:
+                        totalDoubtDamage += Mathf.RoundToInt(card.value * techMult);
+                        break;
+                    case CardType.Soft:
+                        totalComposureGain += Mathf.RoundToInt(card.value * softMult);
+                        break;
+                    case CardType.Access:
+                        // Access cards always give base split, no multiplier
+                        totalDoubtDamage += Mathf.CeilToInt(card.value * 0.6f);
+                        totalComposureGain += Mathf.FloorToInt(card.value * 0.4f);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
+            
         }
 
+        private float GetSynergyMultiplier(int count)
+        {
+            if (count <= 1) return 1f;
+            return 1f + (count - 1) * 0.5f;
+        }
+        
 
         public void DiscardSelectedHand()
         {
@@ -391,7 +419,8 @@ namespace Managers
             if (isBattleActive && currentRound < interviewQuestions.Count)
             {
                 // Display next interview question
-                OnBattleMessage?.Invoke($"Q: {interviewQuestions[currentRound]}");
+                if (questionText)
+                 questionText.text = $"Question {currentRound+ 1}: \n \n {interviewQuestions[currentRound]}";
             }
             
             selectedHandIndices.Clear();
@@ -409,9 +438,8 @@ namespace Managers
                     if (!deckManager.DrawCard()) break;
                 }
             }
-
-            Debug.Log("Your turn — select up to 5 cards and play your hand!");
-            OnBattleMessage?.Invoke("Your turn. Build your hand, then play it.");
+            
+            OnBattleMessage?.Invoke($"Your turn. Think about it and answer the question");
             
         }
     
@@ -419,8 +447,7 @@ namespace Managers
         private void OnEnemyTurnStarted()
         {
             if (!isBattleActive) return;
-        
-            Debug.Log("Interviewer's turn - Challenging your answers!");
+            
             OnBattleMessage?.Invoke("Interviewer questions your experience...");
         
             // Enemy attacks
@@ -433,11 +460,19 @@ namespace Managers
         
             if (!isBattleActive) yield break;
         
-            // Calculate random damage
-            int damage = Random.Range(enemyMinDamage, enemyMaxDamage + 1);
-        
-            OnBattleMessage?.Invoke($"Interviewer challenges you! -{damage} Confidence");
-            Debug.Log($"Interviewer deals {damage} damage");
+            
+            // Calculate damage to deal
+            var damage = currentRound switch
+            {
+                // Round 1
+                0 => Random.Range(3, 6),
+                // Round 2
+                1 => Random.Range(5, 9),
+                // Round 3 and above 
+                _ => Random.Range(7, 13)
+            };
+
+            OnBattleMessage?.Invoke($" -{damage} Confidence");
         
             // Apply damage to player
             playerConfidence?.TakeDamage(damage);
@@ -445,15 +480,19 @@ namespace Managers
             yield return new WaitForSeconds(0.3f);
 
             if (isBattleActive && playerConfidence && playerConfidence.CurrentConfidence > 0)
+            {
+                // increment round
+                currentRound++;
                 turnManager?.EndEnemyTurn();
-            
-            
-            // increment round
-            
-            currentRound++;
+                
+            }
+               
             
             if (currentRound >= maxRounds && isBattleActive)
             {
+
+                if (questionText)
+                    questionText.text = "The interview is over";
                 
                 OnBattleMessage?.Invoke("The interview is over, lets see if you convinced them! ...");
                 
@@ -509,8 +548,13 @@ namespace Managers
             if (!isBattleActive) return;
         
             isBattleActive = false;
-            Debug.Log("YOU GOT THE JOB");
-            OnBattleMessage?.Invoke("Congratulations! The interviewer is impressed. You got the job!");
+           
+            //OnBattleMessage?.Invoke("Congratulations! The interviewer is impressed. You got the job!");
+            
+            if (questionText)
+                questionText.text = "Congratulations! The interviewer is impressed. You got the job!";
+            
+            
             OnInterviewWon?.Invoke();
         
             // Disable further turn actions
@@ -525,8 +569,13 @@ namespace Managers
             if (!isBattleActive) return;
         
             isBattleActive = false;
-            Debug.Log("YOU DID NOT GET THE JOB");
-            OnBattleMessage?.Invoke("You didn't get the job. Keep building your skills and try again!");
+           
+            //OnBattleMessage?.Invoke("You didn't get the job. Keep building your skills and try again!");
+            
+            if (questionText)
+                questionText.text = "Unfortunately, you didn't get the job. Keep building your skills and try again.";
+            
+            
             OnInterviewLost?.Invoke();
         
             // Disable further turn actions
@@ -541,7 +590,7 @@ namespace Managers
         // For UI buttons
         public bool IsPlayerTurn()
         {
-            return isBattleActive && turnManager != null && turnManager.CurrentPhase == TurnPhase.PlayerTurn;
+            return isBattleActive && turnManager && turnManager.CurrentPhase == TurnPhase.PlayerTurn;
         }
     
         public bool IsBattleActive()
@@ -551,8 +600,7 @@ namespace Managers
     
         public List<SkillCardData> GetCurrentHand()
         {
-            if (deckManager == null) return new List<SkillCardData>();
-            return deckManager.Hand;
+            return !deckManager ? new List<SkillCardData>() : deckManager.Hand;
         }
 
         private void OnDestroy()

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 66062a01d93d75d439ab5e6a9f782cf3, type: 3}
-  m_Name: Communication
+  m_Name: PortfolioProject
   m_EditorClassIdentifier: 
-  cardName: Communication
-  description: A way with words, always good at communication
-  cardType: 1
-  value: 4
-  cardIcon: {fileID: -3670924675031685130, guid: 6019df395f7fe9242aa7788547185ecf, type: 3}
-  cardColor: {r: 0.81886786, g: 0.54815876, b: 0.09733708, a: 1}
+  cardName: Portfolio Project
+  description: A little project on portfolio
+  cardType: 2
+  value: 5
+  cardIcon: {fileID: 1253799128, guid: 6019df395f7fe9242aa7788547185ecf, type: 3}
+  cardColor: {r: 0.7584905, g: 0.1531292, b: 0.1531292, a: 1}

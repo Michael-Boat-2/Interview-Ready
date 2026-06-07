@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 66062a01d93d75d439ab5e6a9f782cf3, type: 3}
-  m_Name: Communication
+  m_Name: Git
   m_EditorClassIdentifier: 
-  cardName: Communication
-  description: A way with words, always good at communication
-  cardType: 1
+  cardName: Git
+  description: Understands version control practices
+  cardType: 0
   value: 4
-  cardIcon: {fileID: -3670924675031685130, guid: 6019df395f7fe9242aa7788547185ecf, type: 3}
-  cardColor: {r: 0.81886786, g: 0.54815876, b: 0.09733708, a: 1}
+  cardIcon: {fileID: -1219386588, guid: 6019df395f7fe9242aa7788547185ecf, type: 3}
+  cardColor: {r: 0.49962977, g: 0.78113204, b: 0.5539204, a: 1}

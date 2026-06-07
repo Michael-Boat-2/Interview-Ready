@@ -32,7 +32,7 @@ namespace Managers
         public void Initialize()
         {
             currentConfidence = startingConfidence;
-            currentComposure = 0;
+            currentComposure = maxComposure;
             OnConfidenceChanged?.Invoke();
             OnComposureChanged?.Invoke();
             Debug.Log($"Confidence initialized: {currentConfidence}/{maxConfidence}");
@@ -96,7 +96,7 @@ namespace Managers
         public void ResetForNewInterview()
         {
             currentConfidence = startingConfidence;
-            currentComposure = 0;
+            currentComposure = maxComposure;
             OnConfidenceChanged?.Invoke();
             OnComposureChanged?.Invoke();
             Debug.Log($"Reset for interview. Confidence: {currentConfidence}/{maxConfidence}");
