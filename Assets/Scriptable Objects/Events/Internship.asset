@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e3d4890cf2b4b4bb9366a760e8742b4, type: 3}
   m_Name: Internship
   m_EditorClassIdentifier: 
-  eventName: 
-  description: 
-  cardReward: {fileID: 0}
+  eventName: Internship Opportunity
+  description: Gained the opportunity to intern
+  cardReward: {fileID: 11400000, guid: 128d82e197e770d44a022f8d048da11a, type: 2}

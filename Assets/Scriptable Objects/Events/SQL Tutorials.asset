@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e3d4890cf2b4b4bb9366a760e8742b4, type: 3}
   m_Name: SQL Tutorials
   m_EditorClassIdentifier: 
-  eventName: 
-  description: 
-  cardReward: {fileID: 0}
+  eventName: SQL Tutorials
+  description: Learn some basic SQL
+  cardReward: {fileID: 11400000, guid: c72e430eaa393414f946109c2c3fe4b2, type: 2}

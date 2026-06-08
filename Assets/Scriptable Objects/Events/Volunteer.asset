@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e3d4890cf2b4b4bb9366a760e8742b4, type: 3}
   m_Name: Volunteer
   m_EditorClassIdentifier: 
-  eventName: 
-  description: 
-  cardReward: {fileID: 0}
+  eventName: Volunteer
+  description: 'Volunteered for a fundraising event '
+  cardReward: {fileID: 11400000, guid: 1611765085328aa4c9aecdbafcb1606c, type: 2}

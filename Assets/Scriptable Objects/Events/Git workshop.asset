@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e3d4890cf2b4b4bb9366a760e8742b4, type: 3}
   m_Name: Git workshop
   m_EditorClassIdentifier: 
-  eventName: 
-  description: 
-  cardReward: {fileID: 0}
+  eventName: Git workshop
+  description: Attended a Github workshop
+  cardReward: {fileID: 11400000, guid: f3b8f3972591850429485e75c200a89d, type: 2}

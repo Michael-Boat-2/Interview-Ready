@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: React Bootcamp
   m_EditorClassIdentifier: 
   eventName: React Bootcamp
-  description: 
+  description: Went to a bootcamp for ReactJS
   cardReward: {fileID: 11400000, guid: 65ebfefab87ad784d8abad3792957e39, type: 2}

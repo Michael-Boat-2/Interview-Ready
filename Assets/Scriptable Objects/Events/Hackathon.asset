@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e3d4890cf2b4b4bb9366a760e8742b4, type: 3}
   m_Name: Hackathon
   m_EditorClassIdentifier: 
-  eventName: 
-  description: 
-  cardReward: {fileID: 0}
+  eventName: Hackathon
+  description: Participate in a hackathon
+  cardReward: {fileID: 11400000, guid: d77938832e026354081051006b2053ce, type: 2}
