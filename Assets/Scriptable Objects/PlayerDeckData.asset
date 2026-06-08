@@ -12,4 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fb44fcaa98438a4c87d8a299c1a0df1, type: 3}
   m_Name: PlayerDeckData
   m_EditorClassIdentifier: 
-  ownedCards: []
+  ownedCards:
+  - {fileID: 11400000, guid: 8c202e85b391ce5448763628bca8b1e6, type: 2}
+  - {fileID: 11400000, guid: 7ee11bbb637e6c54c94f90b9e8c3f9a1, type: 2}
+  - {fileID: 11400000, guid: e54aa80500e5e5f4b81e670b567e0934, type: 2}
+  - {fileID: 11400000, guid: 7d37b657f11a0824ca28f19d0f7c1666, type: 2}
+  - {fileID: 11400000, guid: 4b89116452de70f489ef6130cda05ab1, type: 2}
+  - {fileID: 11400000, guid: ff02f8d06747e144c86d26aade994eb5, type: 2}
+  - {fileID: 11400000, guid: f3b8f3972591850429485e75c200a89d, type: 2}
