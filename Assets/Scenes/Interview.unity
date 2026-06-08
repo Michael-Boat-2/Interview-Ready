@@ -5763,15 +5763,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da3d7225b65b4c5889c6d8495e7a12a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allOwnedCards:
-  - {fileID: 11400000, guid: 4b89116452de70f489ef6130cda05ab1, type: 2}
-  - {fileID: 11400000, guid: 8c202e85b391ce5448763628bca8b1e6, type: 2}
-  - {fileID: 11400000, guid: 00494bb386e39524ba520eaf30168c79, type: 2}
-  - {fileID: 11400000, guid: e54aa80500e5e5f4b81e670b567e0934, type: 2}
-  - {fileID: 11400000, guid: 7ee11bbb637e6c54c94f90b9e8c3f9a1, type: 2}
-  - {fileID: 11400000, guid: ff02f8d06747e144c86d26aade994eb5, type: 2}
-  - {fileID: 11400000, guid: 8c202e85b391ce5448763628bca8b1e6, type: 2}
-  - {fileID: 11400000, guid: 7ee11bbb637e6c54c94f90b9e8c3f9a1, type: 2}
+  playerDeckData: {fileID: 11400000, guid: 1419d4f6dc9f1ae44ac1929bb1a70721, type: 2}
   startingHandSize: 5
   drawPile: []
   hand: []
