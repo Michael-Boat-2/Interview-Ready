@@ -1,85 +1,93 @@
-using System.Collections.Generic;
 using Cards;
+using Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Managers;
-using UnityEngine.Serialization;
 
 namespace Interview
 {
-    public class CvDisplay : MonoBehaviour
+    public class InfoPanelManager : MonoBehaviour
     {
-        
-        [Header("Deck Data")]
+        [Header("References")]
+        [SerializeField] private DeckManager deckManager;
         [SerializeField] private PlayerDeckData playerDeckData;
-        
+
         [Header("UI")]
-       
-        //Panel game object
-        [SerializeField] private GameObject cvPanel; 
-        
-        // Content object of ScrollView
+        [SerializeField] private GameObject infoPanel;
+        [SerializeField] private TextMeshProUGUI drawCountText;
+        [SerializeField] private TextMeshProUGUI discardCountText;
+
+        [Header("CV Section")]
         [SerializeField] private Transform contentParent;
         
         [SerializeField] private GameObject sectionPrefab;  
         // Prefab with a TextMeshProUGUI
         [SerializeField] private GameObject cardTextPrefab;
         
-        //[SerializeField] private Button toggleCvButton;
-        [SerializeField]private bool isOpen = false;
-        
         
         [Header("Type Colors")]
         [SerializeField] private Color technicalColor = new Color(0.2f, 0.6f, 1f);
         [SerializeField] private Color softColor = new Color(0.2f, 0.8f, 0.4f);
         [SerializeField] private Color accessColor = new Color(0.9f, 0.6f, 0.2f);
-     
-        
-        
+
+        private bool isOpen = false;
+
         private void Start()
         {
-            /*if (toggleCvButton)
-                toggleCvButton.onClick.AddListener(ToggleCv);*/
-            
-            cvPanel.SetActive(false);
+            if (infoPanel)
+                infoPanel.SetActive(false);
+
+            if (!deckManager)
+                deckManager = FindFirstObjectByType<DeckManager>();
+
+            if (!deckManager) return;
+            deckManager.OnDrawPileCountChanged += UpdateDrawCount;
+            deckManager.OnDiscardPileCountChanged += UpdateDiscardCount;
+            UpdateDrawCount(deckManager.DrawPileCount);
+            UpdateDiscardCount(deckManager.DiscardPileCount);
         }
 
-        public void ToggleCv()
+        public void TogglePanel()
         {
             isOpen = !isOpen;
-            cvPanel.SetActive(isOpen);
-            if (isOpen)
-                RefreshCv();
+            infoPanel.SetActive(isOpen);
+
+            if (!isOpen) return;
+            RefreshInfo();
+            // Ensure latest counts
+            if (!deckManager) return;
+            UpdateDrawCount(deckManager.DrawPileCount);
+            UpdateDiscardCount(deckManager.DiscardPileCount);
         }
 
-        public void RefreshCv()
+        private void UpdateDrawCount(int count)
+        {
+            if (drawCountText)
+                drawCountText.text = $"Draw pile: {count}";
+        }
+
+        private void UpdateDiscardCount(int count)
+        {
+            if (discardCountText)
+                discardCountText.text = $"Discard pile: {count}";
+        }
+
+     
+
+        private void RefreshInfo()
         {
             // Clear old entries
             foreach (Transform child in contentParent)
                 Destroy(child.gameObject);
 
             if (!playerDeckData) return;
-            
-            
-            // Create sections
-            CreateSection("Hard Skills", CardType.Technical, technicalColor);
+
+            CreateSection("Technical Skills", CardType.Technical, technicalColor);
             CreateSection("Soft Skills", CardType.Soft, softColor);
-            CreateSection("Experience", CardType.Access, accessColor);
-            
-            /*foreach (var card in playerDeckData.ownedCards)
-            {
-                var go = Instantiate(cardTextPrefab, contentParent);
-                var tmp = go.GetComponent<TextMeshProUGUI>();
-                if (tmp)
-                    tmp.text = $"{card.cardName} ({card.cardType})";
-            }*/
-            
-            
-            //
-            // Force layout rebuild to fix overlapping
+            CreateSection("Access / Experience", CardType.Access, accessColor);
+
+            // Force layout rebuild to prevent overlapping
             LayoutRebuilder.ForceRebuildLayoutImmediate(contentParent as RectTransform);
-            
         }
 
         private void CreateSection(string title, CardType type, Color color)
@@ -109,9 +117,14 @@ namespace Interview
                 cardTMP.color = color;
             }
         }
-        
-        
-        
-        
+   
+      
+
+        private void OnDestroy()
+        {
+            if (!deckManager) return;
+            deckManager.OnDrawPileCountChanged -= UpdateDrawCount;
+            deckManager.OnDiscardPileCountChanged -= UpdateDiscardCount;
+        }
     }
 }
