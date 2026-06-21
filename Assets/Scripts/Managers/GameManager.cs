@@ -11,6 +11,14 @@ using Random = UnityEngine.Random;
 
 namespace Managers
 {
+    public enum InterviewEndReason
+    {
+        Won,                 // Doubt reached 0
+        LostConfidence,      // Confidence reached 0
+        TimedOut             // Max rounds reached without winning
+    }
+    
+    
     public class GameManager : MonoBehaviour
     {
         
@@ -25,7 +33,7 @@ namespace Managers
         
         [Header("Question Display")]
         [SerializeField] private TextMeshProUGUI questionText;
-
+        [SerializeField] private TextMeshProUGUI roundText;
     
         [Header("References")]
         [SerializeField] private TurnManager turnManager;
@@ -51,18 +59,22 @@ namespace Managers
         public int MaxDiscardsPerTurn => maxDiscardsPerTurn;
         private int _discardsUsedThisTurn;
         public int DiscardsUsedThisTurn => _discardsUsedThisTurn;
-    
-      
+        
+        
         [Header("Test Cards")]
         [SerializeField] private List<SkillCardData> testStartingDeck = new List<SkillCardData>();
     
+        //Interview ended reason
+        public System.Action<InterviewEndReason> OnInterviewEnded;
+        
+        
         // Events for UI
         public System.Action OnInterviewStarted;
         public System.Action OnInterviewWon;
         public System.Action OnInterviewLost;
         public System.Action<string> OnBattleMessage;
-    
-    
+        
+        
         // Fired whenever the selected hand changes — UI listens to this to highlight cards
         public System.Action<List<SkillCardData>> OnSelectedHandChanged;
 
@@ -124,7 +136,13 @@ namespace Managers
 
 
         }
-        
+
+        private void Update()
+        {
+            //Timer text
+            roundText.text = $"{(maxRounds - currentRound) * 6}:00";
+        }
+
 
         private void StartInterview()
         {
@@ -483,16 +501,20 @@ namespace Managers
             float maxDoubt = interviewerDoubt.MaxDoubt;
             if (maxDoubt <= 0) return 0;
 
-            var fraction = currentDoubt / maxDoubt;
+            //var fraction = (float)currentDoubt / (float)maxDoubt;
             
           
-            for (var i = 0; i < questionThresholds.Length; i++)
+            float fraction = (float)currentDoubt / maxDoubt;
+
+            int crossed = 0;
+            for (int i = 0; i < questionThresholds.Length; i++)
             {
                 if (fraction <= questionThresholds[i])
-                    return i + 1;  
+                    crossed++;
             }
-            
-            return 0; 
+
+            // The question index is the number of thresholds crossed, but capped to the last question
+            return Mathf.Min(crossed, interviewQuestions.Count - 1);
         }
     
     
@@ -552,6 +574,7 @@ namespace Managers
                     {
                         OnBattleMessage?.Invoke("The interviewer was not convinced.");
                         LoseInterview();
+                        
                     }
               
                 }
@@ -608,8 +631,13 @@ namespace Managers
            
             //OnBattleMessage?.Invoke("Congratulations! The interviewer is impressed. You got the job!");
             
+            OnInterviewEnded?.Invoke(InterviewEndReason.Won);
+            
+            /*
             if (questionText)
                 questionText.text = "Congratulations! The interviewer is impressed. You got the job!";
+                */
+            
             
             
             OnInterviewWon?.Invoke();
@@ -629,8 +657,18 @@ namespace Managers
            
             //OnBattleMessage?.Invoke("You didn't get the job. Keep building your skills and try again!");
             
+            
+            var reason = (playerConfidence && playerConfidence.CurrentConfidence <= 0)
+                ? InterviewEndReason.LostConfidence
+                : InterviewEndReason.TimedOut;
+            
+            OnInterviewEnded?.Invoke(reason);
+            
+            
+            /*
             if (questionText)
                 questionText.text = "Unfortunately, you didn't get the job. Keep building your skills and try again.";
+                */
             
             
             OnInterviewLost?.Invoke();
