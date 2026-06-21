@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Cards;
+using Interview;
 using TMPro;
 using System.Linq;
 
@@ -20,6 +21,8 @@ namespace Managers
         [SerializeField] private PlayerDeckData playerDeckData;
         [SerializeField] private EventData[] allEvents;
         private EventData[] currentEvents;
+        
+        [SerializeField] private CvDisplay cvDisplay;
         
         
         
@@ -93,6 +96,8 @@ namespace Managers
                 if (feedbackText)
                     feedbackText.text = $"{selectedEvent.description}" +
                                         $" \n \n Added {selectedEvent.cardReward.cardName} to your CV!";
+                
+                cvDisplay?.RefreshCv();
             }
 
             // Disable the button after claiming

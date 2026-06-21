@@ -26,7 +26,7 @@ namespace Interview
         // Prefab with a TextMeshProUGUI
         [SerializeField] private GameObject cardTextPrefab;
         
-        [SerializeField] private Button toggleCvButton;
+        //[SerializeField] private Button toggleCvButton;
         [SerializeField]private bool isOpen = false;
         
         
@@ -39,13 +39,13 @@ namespace Interview
         
         private void Start()
         {
-            if (toggleCvButton)
-                toggleCvButton.onClick.AddListener(ToggleCv);
+            /*if (toggleCvButton)
+                toggleCvButton.onClick.AddListener(ToggleCv);*/
             
             cvPanel.SetActive(false);
         }
 
-        private void ToggleCv()
+        public void ToggleCv()
         {
             isOpen = !isOpen;
             cvPanel.SetActive(isOpen);
@@ -53,7 +53,7 @@ namespace Interview
                 RefreshCv();
         }
 
-        private void RefreshCv()
+        public void RefreshCv()
         {
             // Clear old entries
             foreach (Transform child in contentParent)
@@ -99,7 +99,7 @@ namespace Interview
                 var cardTMP = cardObj.GetComponent<TextMeshProUGUI>();
                 if (!cardTMP) continue;
                 
-                cardTMP.text = $"{card.cardName} (Value: {card.value})";
+                cardTMP.text = $"{card.cardName} ({card.value})";
                 cardTMP.color = color;
             }
         }
