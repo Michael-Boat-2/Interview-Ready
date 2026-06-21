@@ -15,8 +15,10 @@ namespace Managers
     {
         
         [Header("Round Settings")]
-        [SerializeField] private int maxRounds = 4;
+        [SerializeField] private int maxRounds = 10;
+        [SerializeField] private float[] questionThresholds = { 0.75f, 0.5f, 0.25f };
         private int currentRound = 0;
+        private int currentQuestionIndex = 0;
         
         [Header("Interview Questions")]
         [SerializeField] private List<string> interviewQuestions = new List<string>();
@@ -136,6 +138,11 @@ namespace Managers
             
             
             currentRound = 0;
+            currentQuestionIndex = 0;
+            
+            if (questionText && interviewQuestions.Count > 0)
+                questionText.text = $"Question 1:\n\n{interviewQuestions[0]}";
+            OnBattleMessage?.Invoke($"The interview begins with: \"{interviewQuestions[0]}\"");
         
             // Hook filled images up to stat events
             if (confidenceFill && playerConfidence)
@@ -306,9 +313,11 @@ namespace Managers
 
             CheckBattleState();
 
-            // Hand was accepted, switch to enemy turn
+            // Hand was accepted, switch to enemy turn and advance question
             if (isBattleActive)
-                turnManager?.EndPlayerTurn();
+            {
+                StartCoroutine(AdvanceQuestionsSequence());
+            }
         }
 
         
@@ -420,8 +429,8 @@ namespace Managers
             if (isBattleActive && currentRound < interviewQuestions.Count)
             {
                 // Display next interview question
-                if (questionText)
-                 questionText.text = $"Question {currentRound+ 1}: \n \n {interviewQuestions[currentRound]}";
+                /*if (questionText)
+                 questionText.text = $"Question {currentRound+ 1}: \n \n {interviewQuestions[currentRound]}";*/
             }
             
             selectedHandIndices.Clear();
@@ -442,6 +451,48 @@ namespace Managers
             
             OnBattleMessage?.Invoke($"Your turn. Think about it and answer the question");
             
+        }
+        
+       //Question sequence checking
+        private IEnumerator AdvanceQuestionsSequence()
+        {
+            if (!isBattleActive || !interviewerDoubt) yield break;
+
+            // Calculate current question based on current doubt
+            int targetIndex = GetQuestionIndexFromDoubt(interviewerDoubt.CurrentDoubt);
+
+            // Advance one question at a time, showing each briefly
+            while (currentQuestionIndex < targetIndex && currentQuestionIndex < interviewQuestions.Count - 1)
+            {
+                currentQuestionIndex++;
+                if (questionText)
+                    questionText.text = $"Question {currentQuestionIndex + 1}:\n\n{interviewQuestions[currentQuestionIndex]}";
+                
+                OnBattleMessage?.Invoke($"The interviewer asks a new question: \"{interviewQuestions[currentQuestionIndex]}\"");
+                yield return new WaitForSeconds(1.2f); 
+            }
+
+            // After all questions have been shown, end the player turn
+            if (isBattleActive && turnManager.CurrentPhase == TurnPhase.PlayerTurn)
+                turnManager.EndPlayerTurn();
+        }
+
+        //Determine question based on current doubt
+        private int GetQuestionIndexFromDoubt(int currentDoubt)
+        {
+            float maxDoubt = interviewerDoubt.MaxDoubt;
+            if (maxDoubt <= 0) return 0;
+
+            var fraction = currentDoubt / maxDoubt;
+            
+          
+            for (var i = 0; i < questionThresholds.Length; i++)
+            {
+                if (fraction <= questionThresholds[i])
+                    return i + 1;  
+            }
+            
+            return 0; 
         }
     
     
@@ -484,29 +535,34 @@ namespace Managers
             {
                 // increment round
                 currentRound++;
+                
+                
+                if (currentRound >= maxRounds)
+                {
+
+                    if (questionText)
+                        questionText.text = "The interview is over";
+                
+                    OnBattleMessage?.Invoke("The interview is over, lets see if you convinced them! ...");
+                
+                    yield return new WaitForSeconds(0.5f); 
+                
+                    // Time's up, AND our interviewer still has doubt in our skills, player loses
+                    if (interviewerDoubt && interviewerDoubt.CurrentDoubt > 0)
+                    {
+                        OnBattleMessage?.Invoke("The interviewer was not convinced.");
+                        LoseInterview();
+                    }
+              
+                }
+                
+                
                 turnManager?.EndEnemyTurn();
                 
             }
                
             
-            if (currentRound >= maxRounds && isBattleActive)
-            {
-
-                if (questionText)
-                    questionText.text = "The interview is over";
-                
-                OnBattleMessage?.Invoke("The interview is over, lets see if you convinced them! ...");
-                
-                yield return new WaitForSeconds(0.5f); 
-                
-                // Time's up, AND our interviewer still has doubt in our skills, player loses
-                if (interviewerDoubt && interviewerDoubt.CurrentDoubt > 0)
-                {
-                    OnBattleMessage?.Invoke("The interviewer was not convinced.");
-                    LoseInterview();
-                }
-              
-            }
+           
             
             
         }
