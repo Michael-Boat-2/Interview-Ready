@@ -17,4 +17,4 @@ MonoBehaviour:
   cardType: 2
   value: 5
   cardIcon: {fileID: 21300000, guid: 7c0b5e7e902e4403a8811e9e9fe7f1be, type: 3}
-  cardColor: {r: 0.91764706, g: 0.26995146, b: 0.19215682, a: 1}
+  cardColor: {r: 0.5529412, g: 0.5176471, b: 0.93207544, a: 1}
