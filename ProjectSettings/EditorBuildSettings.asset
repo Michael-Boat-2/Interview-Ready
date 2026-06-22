@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/ScreenFlow.unity
     guid: 034229976c71cf64bbafdc6305a1cf0e
   - enabled: 1
+    path: Assets/Scenes/Onboarding.unity
+    guid: cb87245e0392b504ea1af8b7986b24b3
+  - enabled: 1
     path: Assets/Scenes/Events.unity
     guid: 0a9861ab186aacf4b885918f9a7961be
   - enabled: 1

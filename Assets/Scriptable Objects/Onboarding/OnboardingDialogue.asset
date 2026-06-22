@@ -24,13 +24,20 @@ MonoBehaviour:
     panelToActivate: 0
     showCharacter: 1
   - text: The current job market is so competitive, but with the right cards you
-      can land youe next position in a flash. When you click on an event you'll gain
+      can land your next position in a flash. When you click on an event you'll gain
       a card and learn a skill
+    panelToActivate: 2
+    showCharacter: 0
+  - text: Showing that you're constantly applying yourself, towards your interests
+      is what recruiters like to see
     panelToActivate: 2
     showCharacter: 1
   - text: So this is how your CV looks like.
     panelToActivate: 1
     showCharacter: 0
   - text: When you're ready, you can go in to meet the hiring manager about the job.
+    panelToActivate: 0
+    showCharacter: 1
+  - text: Also, remember to tkae it easy, failure is part of the process
     panelToActivate: 0
     showCharacter: 1
