@@ -16,5 +16,5 @@ MonoBehaviour:
   description: 'Good at connecting with people '
   cardType: 2
   value: 5
-  cardIcon: {fileID: -382545362, guid: 6019df395f7fe9242aa7788547185ecf, type: 3}
+  cardIcon: {fileID: 21300000, guid: 7c0b5e7e902e4403a8811e9e9fe7f1be, type: 3}
   cardColor: {r: 0.91764706, g: 0.26995146, b: 0.19215682, a: 1}

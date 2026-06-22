@@ -116,7 +116,8 @@ namespace Interview
                 SkillCardData card = hand[i];
                 var newButtonObj = Instantiate(cardButtonPrefab, handPanel);
                 var newButton = newButtonObj.GetComponent<Button>();
-                    
+                
+                
 
                 // Store card reference
                 var buttonData = newButtonObj.GetComponent<CardButtonData>();
@@ -125,19 +126,29 @@ namespace Interview
                     buttonData = newButtonObj.AddComponent<CardButtonData>();
                 
                 var fillImage = buttonData.cardImage;
+                
+                //colors
+                //var baseColor = GetCardColor(card.cardType);
+                var baseColor = card.cardColor;
+                var darkColor = Darken(baseColor, 0.2f);
+
 
                 if (fillImage)
                 {
-                    fillImage.color = GetCardColor(card.cardType);
+                    //darker icon
+                    fillImage.color = darkColor;
                     fillImage.sprite = card.cardIcon;
                 }
                 
-              
                 if (buttonData.cardBackground)
-                    buttonData.cardBackground.color = GetCardColor(card.cardType);
+                    buttonData.cardBackground.color = baseColor;
 
                 if (buttonData.cardNameText)
+                {
                     buttonData.cardNameText.text = card.cardName;
+                    buttonData.cardNameText.color = (baseColor.grayscale > 0.5f) ? Color.black : Color.white;
+                }
+                    
                    
                 
                 buttonData.SetCard(card);
@@ -304,6 +315,17 @@ namespace Interview
                 case CardType.Access:    return new Color(0.9f, 0.6f, 0.2f);
                 default:                 return Color.gray;
             }
+        }
+        
+        
+        public static Color Darken(Color color, float amount = 0.2f)
+        {
+            return new Color(
+                Mathf.Clamp01(color.r - amount),
+                Mathf.Clamp01(color.g - amount),
+                Mathf.Clamp01(color.b - amount),
+                color.a
+            );
         }
 
         private void OnDestroy()

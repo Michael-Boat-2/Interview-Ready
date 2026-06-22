@@ -16,5 +16,5 @@ MonoBehaviour:
   description: Understands version control practices
   cardType: 0
   value: 4
-  cardIcon: {fileID: -1219386588, guid: 6019df395f7fe9242aa7788547185ecf, type: 3}
+  cardIcon: {fileID: 21300000, guid: ae17377b60b304861b866bfbe5f6b3f6, type: 3}
   cardColor: {r: 0.49962977, g: 0.78113204, b: 0.5539204, a: 1}

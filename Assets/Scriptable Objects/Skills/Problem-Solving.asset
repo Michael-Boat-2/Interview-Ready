@@ -16,5 +16,5 @@ MonoBehaviour:
   description: If there is a problem, it can be solved
   cardType: 1
   value: 5
-  cardIcon: {fileID: 1749170715, guid: 6019df395f7fe9242aa7788547185ecf, type: 3}
+  cardIcon: {fileID: 21300000, guid: 5c9a33c9ff3b74dfe8050c6061b33110, type: 3}
   cardColor: {r: 0.78113204, g: 0.65437055, b: 0.21665359, a: 1}

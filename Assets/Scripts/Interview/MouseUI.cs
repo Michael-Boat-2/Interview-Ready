@@ -21,11 +21,11 @@ namespace Interview
 
         private Canvas parentCanvas;
 
-        void Start()
+        private void Start()
         {
             parentCanvas = GetComponentInParent<Canvas>();
-            if (parentCanvas == null)
-                parentCanvas = FindObjectOfType<Canvas>();
+            if (!parentCanvas)
+                parentCanvas = FindFirstObjectByType<Canvas>();
 
             panel.gameObject.SetActive(false);
         }
@@ -52,28 +52,32 @@ namespace Interview
 
         public void ShowCardInfo(SkillCardData card)
         {
-            if (card == null) return;
+            if (!card) return;
 
-            if (cardNameText != null)
+            if (cardNameText)
                 cardNameText.text = card.cardName;
 
-            if (cardTypeText != null)
+            if (cardTypeText)
                 cardTypeText.text = card.cardType.ToString();
 
-            if (cardValueText != null)
+            if (cardValueText)
             {
                 string valueLabel = card.cardType == CardType.Technical ? "Damage" :
                                    (card.cardType == CardType.Soft ? "Composure" : "Boost");
                 cardValueText.text = $"{valueLabel}: {card.value}";
             }
 
-            if (cardDescriptionText != null)
+            if (cardDescriptionText)
                 cardDescriptionText.text = card.description;
+            
+            //Color work
+            Color baseColor = card.cardColor;
+            Color darkColor = DeckDisplay.Darken(baseColor, 0.2f);
 
-            if (cardIconImage != null && card.cardIcon != null)
+            if (cardIconImage && card.cardIcon)
                 cardIconImage.sprite = card.cardIcon;
 
-            if (cardBackgroundImage != null)
+            if (cardBackgroundImage)
                 cardBackgroundImage.color = GetCardColor(card.cardType);
 
             panel.gameObject.SetActive(true);
