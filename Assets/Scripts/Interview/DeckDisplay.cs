@@ -131,6 +131,13 @@ namespace Interview
                     fillImage.color = GetCardColor(card.cardType);
                     fillImage.sprite = card.cardIcon;
                 }
+                
+              
+                if (buttonData.cardBackground)
+                    buttonData.cardBackground.color = GetCardColor(card.cardType);
+
+                if (buttonData.cardNameText)
+                    buttonData.cardNameText.text = card.cardName;
                    
                 
                 buttonData.SetCard(card);
