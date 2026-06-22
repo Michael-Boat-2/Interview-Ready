@@ -13,6 +13,8 @@ namespace Managers
 
             public enum PanelType { None, CV, Events }
             public PanelType panelToActivate;
+
+            public bool showCharacter;
         }
 
         public string speakerName = "Career Coach";

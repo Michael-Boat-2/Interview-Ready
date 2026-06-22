@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7087a33b9b694f98874cb605de3959ec, type: 3}
   m_Name: OnboardingDialogue
   m_EditorClassIdentifier: 
-  speakerName: The Connector
+  speakerName: Lisa
   characterPortrait: {fileID: 21300000, guid: 9145949f82f262b42a935c86b39eeb21, type: 3}
   entries:
   - text: 'Hi! Im Lisa, I''ll help you make the right moves to stimulate your profile
@@ -22,11 +22,15 @@ MonoBehaviour:
       Let''s
       look at your profile'
     panelToActivate: 0
+    showCharacter: 1
   - text: The current job market is so competitive, but with the right cards you
       can land youe next position in a flash. When you click on an event you'll gain
       a card and learn a skill
     panelToActivate: 2
+    showCharacter: 1
   - text: So this is how your CV looks like.
     panelToActivate: 1
+    showCharacter: 0
   - text: When you're ready, you can go in to meet the hiring manager about the job.
     panelToActivate: 0
+    showCharacter: 1

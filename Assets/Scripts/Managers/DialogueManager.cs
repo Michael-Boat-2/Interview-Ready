@@ -46,7 +46,7 @@ namespace Managers
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 NextDialogue();
             }
@@ -70,7 +70,9 @@ namespace Managers
             
             // activate necessary panel 
             SetPanelVisibility(entry.panelToActivate);
-
+            
+            if (characterImage)
+                characterImage.gameObject.SetActive(entry.showCharacter);
             
             if (continuePrompt)
                 continuePrompt.SetActive(currentIndex < dialogueData.entries.Length);

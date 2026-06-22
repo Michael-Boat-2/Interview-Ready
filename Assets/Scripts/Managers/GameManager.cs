@@ -82,6 +82,14 @@ namespace Managers
     
     
         private bool isBattleActive = false;
+        
+        
+        [Header("Sound Effects")]
+        [SerializeField] private AudioClip cardPlaySound;
+        [SerializeField] private AudioClip cardDiscardSound;
+        [SerializeField] private AudioClip enemyAttackSound;
+        [SerializeField] private AudioClip winSound;
+        [SerializeField] private AudioClip loseSound;
     
         //autostart
         [SerializeField]private bool autoStart = true;
@@ -328,6 +336,9 @@ namespace Managers
 
             selectedHandIndices.Clear();
             OnSelectedHandChanged?.Invoke(new List<SkillCardData>());
+            
+            //Sound fx
+            SoundManager.Instance?.PlaySFX(cardPlaySound);
 
             CheckBattleState();
 
@@ -423,6 +434,10 @@ namespace Managers
        
              //Draw a new card
              deckManager.DrawCard();
+             
+             
+             //Discard sound effect
+             SoundManager.Instance?.PlaySFX(cardDiscardSound);
             
              
              //Clear selections
@@ -548,10 +563,11 @@ namespace Managers
 
             OnBattleMessage?.Invoke($" -{damage} Confidence");
         
-            // Apply damage to player
+            // Apply damage to player, play attack sound
             playerConfidence?.TakeDamage(damage);
+            SoundManager.Instance?.PlaySFX(enemyAttackSound);
         
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(2f);
 
             if (isBattleActive && playerConfidence && playerConfidence.CurrentConfidence > 0)
             {
@@ -628,6 +644,9 @@ namespace Managers
             if (!isBattleActive) return;
         
             isBattleActive = false;
+            
+            //Win SFX
+            SoundManager.Instance?.PlaySFX(winSound);
            
             //OnBattleMessage?.Invoke("Congratulations! The interviewer is impressed. You got the job!");
             
@@ -654,6 +673,9 @@ namespace Managers
             if (!isBattleActive) return;
         
             isBattleActive = false;
+            
+            //Losing SFX
+            SoundManager.Instance?.PlaySFX(loseSound);
            
             //OnBattleMessage?.Invoke("You didn't get the job. Keep building your skills and try again!");
             
