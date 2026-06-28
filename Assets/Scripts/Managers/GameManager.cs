@@ -64,7 +64,8 @@ namespace Managers
         [Header("Test Cards")]
         [SerializeField] private List<SkillCardData> testStartingDeck = new List<SkillCardData>();
     
-        
+        [Header("Camera Shake")]
+        [SerializeField] private CameraShake cameraShake;
         
         
         //Interview ended reason
@@ -142,6 +143,8 @@ namespace Managers
             if (interviewerDoubt)
                 interviewerDoubt.OnInterviewerDefeated += OnInterviewerDefeated;
 
+            if (!cameraShake)
+                cameraShake = FindFirstObjectByType<CameraShake>();
 
             if (autoStart)
             {
@@ -345,6 +348,9 @@ namespace Managers
             
             //Sound fx
             SoundManager.Instance?.PlaySFX(cardPlaySound);
+            
+            //light camera shake
+            cameraShake?.Shake(0.1f, 0.15f); 
 
             CheckBattleState();
 
@@ -573,6 +579,9 @@ namespace Managers
             // Apply damage to player, play attack sound
             playerConfidence?.TakeDamage(damage);
             SoundManager.Instance?.PlaySFX(enemyAttackSound);
+            
+            //some camera shake
+            cameraShake?.Shake(0.15f, 0.25f);
         
             yield return new WaitForSeconds(2f);
 
