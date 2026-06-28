@@ -428,10 +428,10 @@ namespace Interview
                 }
                 
                 // Wait for delay in between cards
-                yield return new WaitForSeconds(0.05f);
+                //yield return new WaitForSeconds(0.15f);
             }
             
-            
+            yield return new WaitForSeconds(0.3f);
             
         }
         

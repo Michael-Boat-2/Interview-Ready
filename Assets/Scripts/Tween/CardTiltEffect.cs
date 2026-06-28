@@ -57,7 +57,7 @@ namespace Tween
             float normY = Mathf.Clamp01(localPoint.y / size.y) - 0.5f;
 
             // Invert both axes – card tilts *away* from the cursor
-            normX = -normX;
+            //normX = -normX;
             normY = -normY;
 
             // Target rotation: Yaw on Y axis, Pitch on X axis

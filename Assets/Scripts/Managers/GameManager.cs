@@ -65,7 +65,8 @@ namespace Managers
         [SerializeField] private List<SkillCardData> testStartingDeck = new List<SkillCardData>();
     
         [Header("Camera Shake")]
-        [SerializeField] private CameraShake cameraShake;
+        [SerializeField] private UIShake playerShake;
+        [SerializeField] private UIShake interviewerShake;
         
         
         //Interview ended reason
@@ -143,8 +144,8 @@ namespace Managers
             if (interviewerDoubt)
                 interviewerDoubt.OnInterviewerDefeated += OnInterviewerDefeated;
 
-            if (!cameraShake)
-                cameraShake = FindFirstObjectByType<CameraShake>();
+            /*if (!cameraShake)
+                cameraShake = FindFirstObjectByType<UIShake>();*/
 
             if (autoStart)
             {
@@ -350,7 +351,7 @@ namespace Managers
             SoundManager.Instance?.PlaySFX(cardPlaySound);
             
             //light camera shake
-            cameraShake?.Shake(0.1f, 0.15f); 
+            interviewerShake?.Shake(8f, 0.15f); 
 
             CheckBattleState();
 
@@ -558,7 +559,7 @@ namespace Managers
     
         private IEnumerator EnemyTurnRoutine()
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(2f);
         
             if (!isBattleActive) yield break;
         
@@ -581,7 +582,7 @@ namespace Managers
             SoundManager.Instance?.PlaySFX(enemyAttackSound);
             
             //some camera shake
-            cameraShake?.Shake(0.15f, 0.25f);
+            playerShake?.Shake(10f, 0.25f);
         
             yield return new WaitForSeconds(2f);
 
