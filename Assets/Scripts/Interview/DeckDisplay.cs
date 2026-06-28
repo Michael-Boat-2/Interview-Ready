@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using Cards;
 using Managers;
@@ -50,6 +51,9 @@ namespace Interview
 
         [SerializeField]private List<Button> cardButtons = new List<Button>();
         private List<SkillCardData> currentHand = new List<SkillCardData>();
+        
+        
+        private bool _isAnimating = false;
 
         private void Awake()
         {
@@ -63,14 +67,18 @@ namespace Interview
                 deckManager.OnHandChanged += UpdateDeckDisplay;
 
             if (gameManager)
+            {
                 gameManager.OnSelectedHandChanged += OnSelectionChanged;
+                gameManager.OnPlayerTurnBegan += AnimateHand; 
+            }
+                
 
             // Wire up the Play Hand button, to answer questions after selecting some cards
             if (playHandButton)
-                playHandButton.onClick.AddListener(OnPlayHandClicked);
+                playHandButton.onClick.AddListener(() => StartCoroutine(PlayWithAnimation()));
             
             if(discardButton)
-                discardButton.onClick.AddListener(OnDiscardClicked);
+                discardButton.onClick.AddListener(() => StartCoroutine(DiscardWithAnimation()));
             
             if (endTurnButton)
                 endTurnButton.onClick.AddListener(OnEndTurnClicked);
@@ -78,6 +86,11 @@ namespace Interview
             // Start with button disabled until player selects cards
             SetPlayHandButtonState(false);
             SetDiscardButtonState(false);
+        }
+
+        private void AnimateHand()
+        {
+            StartCoroutine(AnimateHandIn());
         }
 
 
@@ -282,24 +295,148 @@ namespace Interview
             {
                 trigger = buttonObj.AddComponent<UnityEngine.EventSystems.EventTrigger>();
             }
-               
+            
+            //Add animator effects
+            var anim = buttonObj.GetComponent<CardAnimator>();
 
+            if (!anim)
+            {
+                anim = buttonObj.AddComponent<CardAnimator>();
+            }
+
+            //wire up on entry events
             var enterEntry = new UnityEngine.EventSystems.EventTrigger.Entry
             {
                 eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter
+                
             };
             
-            enterEntry.callback.AddListener(_ => mouseUIPanel?.ShowCardInfo(card));
+            enterEntry.callback.AddListener(_ =>
+            {
+                mouseUIPanel?.ShowCardInfo(card);
+                anim?.PlayHoverEnter();
+            });
+            
             trigger.triggers.Add(enterEntry);
             
 
+            //exit events
             var exitEntry = new UnityEngine.EventSystems.EventTrigger.Entry
             {
                 eventID = UnityEngine.EventSystems.EventTriggerType.PointerExit
             };
-            exitEntry.callback.AddListener(_ => mouseUIPanel?.Hide());
+            
+            exitEntry.callback.AddListener(_ =>
+            {
+                mouseUIPanel?.Hide();
+                anim?.PlayHoverExit();
+            });
+            
             trigger.triggers.Add(exitEntry);
         }
+
+
+        // Called when player clicks "Play Hand". Animates selected cards out, then plays
+        private IEnumerator PlayWithAnimation()
+        {
+            
+            if (_isAnimating) yield break;
+            _isAnimating = true;
+            
+            // Find which cards are selected
+            var selectedIndices = new List<int>();
+            for (int i = 0; i < currentHand.Count; i++)
+            {
+                if (gameManager && gameManager.IsIndexSelected(i))
+                    selectedIndices.Add(i);
+            }
+            
+            
+            // Fly‑out each selected card
+            foreach (int idx in selectedIndices)
+            {
+                if (idx < cardButtons.Count)
+                {
+                    CardAnimator anim = cardButtons[idx].GetComponent<CardAnimator>();
+                    if (anim)
+                    {
+                        // starts shrink + fade (0.3s)
+                        anim.PlayFlyOut();   
+                    }
+                         
+                }
+            }
+            
+            
+            yield return new WaitForSeconds(0.3f);
+            
+            gameManager?.PlaySelectedHand();
+            _isAnimating = false;
+            
+            
+        }
+        
+        // Called when player clicks "Discard". Animates the discarded card out, then discards
+        private IEnumerator DiscardWithAnimation()
+        {
+            
+            if (_isAnimating) yield break;
+            _isAnimating = true;
+            
+            int selectedIndex = -1;
+            for (int i = 0; i < currentHand.Count; i++)
+            {
+                if (gameManager != null && gameManager.IsIndexSelected(i))
+                {
+                    selectedIndex = i;
+                    break;
+                }
+            }
+            
+            
+            if (selectedIndex >= 0 && selectedIndex < cardButtons.Count)
+            {
+                CardAnimator anim = cardButtons[selectedIndex].GetComponent<CardAnimator>();
+                if (anim)
+                {
+                    anim.PlayFlyOut();   
+                }
+                   
+            }
+            
+            //wait for animation 
+            yield return new WaitForSeconds(0.3f);
+
+            // then execute real discard
+            gameManager?.DiscardSelectedHand();
+            _isAnimating = false;
+        }
+
+
+        private IEnumerator AnimateHandIn()
+        {
+            yield return null;
+            
+            
+            foreach (var cardBtn in cardButtons)
+            {
+                var anim = cardBtn.GetComponent<CardAnimator>();
+                if (anim)
+                {
+                    // Tween from 0 to 1
+                    anim.PlayReveal();  
+                }
+                
+                // Wait for delay in between cards
+                yield return new WaitForSeconds(0.05f);
+            }
+            
+            
+            
+        }
+        
+        
+      
 
         /// <summary>
         /// Helper functions
@@ -334,7 +471,11 @@ namespace Interview
                 deckManager.OnHandChanged -= UpdateDeckDisplay;
 
             if (gameManager)
+            {
                 gameManager.OnSelectedHandChanged -= OnSelectionChanged;
+                gameManager.OnPlayerTurnBegan -= AnimateHand;
+            }
+                
         }
     }
 

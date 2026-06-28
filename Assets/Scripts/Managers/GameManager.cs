@@ -64,6 +64,9 @@ namespace Managers
         [Header("Test Cards")]
         [SerializeField] private List<SkillCardData> testStartingDeck = new List<SkillCardData>();
     
+        
+        
+        
         //Interview ended reason
         public System.Action<InterviewEndReason> OnInterviewEnded;
         
@@ -73,6 +76,9 @@ namespace Managers
         public System.Action OnInterviewWon;
         public System.Action OnInterviewLost;
         public System.Action<string> OnBattleMessage;
+        
+        //Fires every time hand is refilled
+        public System.Action OnPlayerTurnBegan; 
         
         
         // Fired whenever the selected hand changes — UI listens to this to highlight cards
@@ -482,6 +488,7 @@ namespace Managers
                 }
             }
             
+            OnPlayerTurnBegan?.Invoke(); 
             OnBattleMessage?.Invoke($"Your turn. Think about it and answer the question");
             
         }
@@ -719,6 +726,14 @@ namespace Managers
         {
             return !deckManager ? new List<SkillCardData>() : deckManager.Hand;
         }
+        
+        
+        
+        
+        
+        
+        
+        
 
         private void OnDestroy()
         {
