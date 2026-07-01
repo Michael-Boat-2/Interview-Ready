@@ -6289,11 +6289,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a5d24278f99372d4788e724f1f830e82, type: 2}
   playerShake: {fileID: 313233933}
   interviewerShake: {fileID: 793535832}
-  cardPlaySound: {fileID: 8300000, guid: 93849264b5c40824c93cfbed1c758e0e, type: 3}
-  cardDiscardSound: {fileID: 0}
-  enemyAttackSound: {fileID: 0}
-  winSound: {fileID: 0}
-  loseSound: {fileID: 0}
+  cardPlaySound: {fileID: 8300000, guid: 904f44d8d8d8d23439b2cbe6ae49b4fe, type: 3}
+  cardDiscardSound: {fileID: 8300000, guid: 830d7ec1bc047ae459d8da36fe5a524e, type: 3}
+  enemyAttackSound: {fileID: 8300000, guid: d11b2a7607402364a9dfc56eca707b19, type: 3}
+  winSound: {fileID: 8300000, guid: 057b56ece7fc4cc41975462ad5fef03c, type: 3}
+  loseSound: {fileID: 8300000, guid: 54c8259cbf4ff4d4cb61782c4fdd760d, type: 3}
   autoStart: 1
 --- !u!1 &995017600
 GameObject:
