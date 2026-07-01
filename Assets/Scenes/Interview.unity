@@ -6289,7 +6289,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a5d24278f99372d4788e724f1f830e82, type: 2}
   playerShake: {fileID: 313233933}
   interviewerShake: {fileID: 793535832}
-  cardPlaySound: {fileID: 0}
+  cardPlaySound: {fileID: 8300000, guid: 93849264b5c40824c93cfbed1c758e0e, type: 3}
   cardDiscardSound: {fileID: 0}
   enemyAttackSound: {fileID: 0}
   winSound: {fileID: 0}
