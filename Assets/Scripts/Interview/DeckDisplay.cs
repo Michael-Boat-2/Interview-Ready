@@ -106,7 +106,7 @@ namespace Interview
             {
                 int used = gameManager.DiscardsUsedThisTurn;
                 int max = gameManager.MaxDiscardsPerTurn; // we need to expose this too
-                discardCounterLabel.text = $"Discards: {used}/{max}";
+                discardCounterLabel.text = $"{max - used} Discards Left";
             }
             
         }
@@ -115,6 +115,12 @@ namespace Interview
          //Update hand display
          private void UpdateDeckDisplay(List<SkillCardData> hand)
         {
+            
+            //Stop any animations
+            StopCoroutine(PlayWithAnimation());
+            StopCoroutine(DiscardWithAnimation());
+            StopCoroutine(AnimateHandIn());
+            
             currentHand = hand;
 
             // Clear old buttons
@@ -184,7 +190,7 @@ namespace Interview
      
         private void OnCardClicked(int handIndex, GameObject buttonObj)
         {
-            if (gameManager == null) return;
+            if (!gameManager) return;
             gameManager.ToggleCardSelection(handIndex);
             // Visuals are updated via the OnSelectedHandChanged callback
         }
@@ -192,13 +198,13 @@ namespace Interview
         private void OnSelectionChanged(List<SkillCardData> selected)
         {
             RefreshSelectionVisuals();
-            SetPlayHandButtonState(selected.Count > 0);
-            SetDiscardButtonState(selected.Count == 1);
+            SetPlayHandButtonState(selected.Count > 0 && selected.Count < gameManager.MaxSelectedCards);
+            SetDiscardButtonState(selected.Count == 1 && gameManager.DiscardsUsedThisTurn < gameManager.MaxDiscardsPerTurn);
 
             if (playHandButtonLabel)
-                playHandButtonLabel.text = selected.Count > 0
-                    ? $"Answer Question ({selected.Count}/{gameManager.MaxSelectedCards})"
-                    : "Answer Question";
+                playHandButtonLabel.text = selected.Count > 0 && selected.Count < gameManager.MaxSelectedCards
+                    ? $"Answer ({selected.Count}/{gameManager.MaxSelectedCards})"
+                    : $"Answer (0/{gameManager.MaxSelectedCards})";
         }
 
         private void RefreshSelectionVisuals()
@@ -346,6 +352,8 @@ namespace Interview
             if (_isAnimating) yield break;
             _isAnimating = true;
             
+            if(playHandButton) playHandButton.interactable = false;
+            
             // Find which cards are selected
             var selectedIndices = new List<int>();
             for (int i = 0; i < currentHand.Count; i++)
@@ -386,10 +394,13 @@ namespace Interview
             if (_isAnimating) yield break;
             _isAnimating = true;
             
+            // Block double-clicks
+            if (discardButton) discardButton.interactable = false;
+            
             int selectedIndex = -1;
             for (int i = 0; i < currentHand.Count; i++)
             {
-                if (gameManager != null && gameManager.IsIndexSelected(i))
+                if (gameManager && gameManager.IsIndexSelected(i))
                 {
                     selectedIndex = i;
                     break;
@@ -423,6 +434,8 @@ namespace Interview
             
             foreach (var cardBtn in cardButtons)
             {
+                if(!cardBtn) continue;
+                
                 var anim = cardBtn.GetComponent<CardAnimator>();
                 if (anim)
                 {
