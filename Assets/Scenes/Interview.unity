@@ -3075,7 +3075,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -683, y: 154}
+  m_AnchoredPosition: {x: -683, y: 89}
   m_SizeDelta: {x: 331.61218, y: 133.81}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &412178507
@@ -10131,7 +10131,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -683.3078, y: 56.311523}
+  m_AnchoredPosition: {x: -683.30786, y: -8.688477}
   m_SizeDelta: {x: -1591.9791, y: -1031.5308}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1868324543
@@ -10275,6 +10275,7 @@ GameObject:
   - component: {fileID: 1894846217}
   - component: {fileID: 1894846220}
   - component: {fileID: 1894846219}
+  - component: {fileID: 1894846221}
   m_Layer: 5
   m_Name: InterviewQuestions
   m_TagString: Untagged
@@ -10299,8 +10300,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000024319, y: 290}
-  m_SizeDelta: {x: 1716.6694, y: 100}
+  m_AnchoredPosition: {x: 0, y: 261}
+  m_SizeDelta: {x: 1716.6694, y: 160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1894846219
 MonoBehaviour:
@@ -10340,6 +10341,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1894846216}
   m_CullTransparentMesh: 1
+--- !u!114 &1894846221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894846216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52eca2db9bb244d4ae6e3257c531e589, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  amplitude: 1.5
+  frequency: 0.5
+  useUnscaledTime: 1
+  floatVertical: 1
+  floatHorizontal: 0
 --- !u!1 &1907388159
 GameObject:
   m_ObjectHideFlags: 0
