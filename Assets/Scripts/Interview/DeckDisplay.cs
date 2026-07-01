@@ -52,6 +52,7 @@ namespace Interview
         [SerializeField]private List<Button> cardButtons = new List<Button>();
         private List<SkillCardData> currentHand = new List<SkillCardData>();
         
+        public static System.Action OnHandDrawn; 
         
         private bool _isAnimating = false;
 
@@ -204,15 +205,17 @@ namespace Interview
         {
             for (int i = 0; i < cardButtons.Count && i < currentHand.Count; i++)
             {
+                if (!cardButtons[i]) continue;
+                
                 SkillCardData card = currentHand[i];
-                bool isSelected = gameManager != null && gameManager.IsIndexSelected(i);
+                bool isSelected = gameManager && gameManager.IsIndexSelected(i);
 
 
                 if (isSelected)
                 {
                     
                     var img = cardButtons[i].GetComponent<CardHighlight>();
-                    if (img != null)
+                    if (img)
                     {
                         //Color base_ = GetCardColor(card.cardType);
                     
@@ -225,7 +228,7 @@ namespace Interview
                 else
                 {
                     var img = cardButtons[i].GetComponent<CardHighlight>();
-                    if (img != null)
+                    if (img)
                     {
                         //Color base_ = GetCardColor(card.cardType);
                     
@@ -431,6 +434,7 @@ namespace Interview
                 //yield return new WaitForSeconds(0.15f);
             }
             
+            OnHandDrawn?.Invoke();
             yield return new WaitForSeconds(0.3f);
             
         }

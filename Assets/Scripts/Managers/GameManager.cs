@@ -95,6 +95,7 @@ namespace Managers
         [Header("Sound Effects")]
         [SerializeField] private AudioClip cardPlaySound;
         [SerializeField] private AudioClip cardDiscardSound;
+        [SerializeField] private AudioClip cardDrawSound; 
         [SerializeField] private AudioClip enemyAttackSound;
         [SerializeField] private AudioClip winSound;
         [SerializeField] private AudioClip loseSound;
@@ -143,6 +144,9 @@ namespace Managers
 
             if (interviewerDoubt)
                 interviewerDoubt.OnInterviewerDefeated += OnInterviewerDefeated;
+            
+            
+            DeckDisplay.OnHandDrawn += OnHandDrawn;
 
             /*if (!cameraShake)
                 cameraShake = FindFirstObjectByType<UIShake>();*/
@@ -154,6 +158,9 @@ namespace Managers
 
 
         }
+        
+        
+        
 
         private void Update()
         {
@@ -161,6 +168,7 @@ namespace Managers
             roundText.text = $"{(maxRounds - currentRound) * 6}:00";
         }
 
+   
 
         private void StartInterview()
         {
@@ -546,6 +554,13 @@ namespace Managers
             return Mathf.Min(crossed, interviewQuestions.Count - 1);
         }
     
+        //hand drawing sound effect
+        private void OnHandDrawn()
+        {
+            if (cardDrawSound)
+                SoundManager.Instance?.PlaySFX(cardDrawSound);
+        }
+
     
         private void OnEnemyTurnStarted()
         {
@@ -627,8 +642,12 @@ namespace Managers
         public void EndPlayerTurn()
         {
             if (!isBattleActive) return;
+            
+            //clear any previous selections
+            selectedHandIndices.Clear();
+            OnSelectedHandChanged?.Invoke(new List<SkillCardData>());
         
-            if (turnManager != null && turnManager.CurrentPhase == TurnPhase.PlayerTurn)
+            if (turnManager && turnManager.CurrentPhase == TurnPhase.PlayerTurn)
             {
                 turnManager.EndPlayerTurn();
             }
@@ -741,9 +760,6 @@ namespace Managers
         
         
         
-        
-        
-        
 
         private void OnDestroy()
         {
@@ -758,6 +774,9 @@ namespace Managers
         
             if (interviewerDoubt)
                 interviewerDoubt.OnInterviewerDefeated -= OnInterviewerDefeated;
+            
+            DeckDisplay.OnHandDrawn -=  OnHandDrawn;
+            
         }
     
     
