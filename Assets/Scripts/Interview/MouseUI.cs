@@ -77,8 +77,9 @@ namespace Interview
             if (cardIconImage && card.cardIcon)
                 cardIconImage.sprite = card.cardIcon;
 
+            // should use actual card color
             if (cardBackgroundImage)
-                cardBackgroundImage.color = GetCardColor(card.cardType);
+                cardBackgroundImage.color = baseColor;
 
             panel.gameObject.SetActive(true);
         }
