@@ -67,6 +67,16 @@ namespace Managers
                     
                     var index = i;  
                     eventButtons[i].onClick.AddListener(() => OnEventClicked(index));
+                    
+                    //give color based on card reward
+                    ColorBlock cb = eventButtons[i].colors;
+                    if (currentEvents[i]?.cardReward)
+                    {
+                        cb.normalColor =  currentEvents[i].cardReward.cardColor;
+                        eventButtons[i].colors = cb;
+                    }
+                        
+                    
                 }
                 
                 else

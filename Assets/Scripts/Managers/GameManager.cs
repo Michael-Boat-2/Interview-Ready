@@ -59,7 +59,7 @@ namespace Managers
         [SerializeField] private int enemyMaxDamage = 7;
     
         [Header("Hand Settings")]
-        [SerializeField] private int maxSelectedCards = 5;
+        [SerializeField] private int maxSelectedCards = 3;
 
         [Header("Discard Settings")] 
         [SerializeField]private int maxDiscardsPerTurn = 1;
@@ -396,7 +396,8 @@ namespace Managers
 
             totalDoubtDamage = 0;
             totalComposureGain = 0;
-
+            
+            // Multiplication based on counts
             foreach (var card in selectedCards)
             {
                 switch (card.cardType)
@@ -409,19 +410,63 @@ namespace Managers
                         break;
                     case CardType.Access:
                         // Access cards always give base split, no multiplier
-                        totalDoubtDamage += Mathf.CeilToInt(card.value * 0.6f);
-                        totalComposureGain += Mathf.FloorToInt(card.value * 0.4f);
+                        totalDoubtDamage += Mathf.CeilToInt(card.value * 0.5f);
+                        totalComposureGain += Mathf.FloorToInt(card.value * 0.5f);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
             
+            //tag matches add to answer performance
+            //collecting all tags into a bag
+            Dictionary<SkillTag, int> tagCounts = new Dictionary<SkillTag, int>();
+            foreach (var card in selectedCards)
+            {
+                if (card.tags == null) continue;
+                foreach (var skillTag in card.tags)
+                {
+                    tagCounts.TryAdd(skillTag, 0);
+                    tagCounts[skillTag]++;
+                }
+            }
+            
+            
+            //for each tag appearing at least twice, add bonus
+            int tagBonusDamage = 0, tagBonusComposure = 0;
+            foreach (var kvp in tagCounts)
+            {
+                if (kvp.Value >= 2)
+                {
+                    // simple plus 5 bonus for each matching tag
+                    tagBonusDamage += 5;
+                    tagBonusComposure += 5;
+                }
+            }
+            
+            totalDoubtDamage += tagBonusDamage;
+            totalComposureGain += tagBonusComposure;
+            
+            
+            
+            
+            // apply interview experience level multiplier
+            //makes interviews easier as our player levels up
+            if (experienceData)
+            {
+                totalDoubtDamage = Mathf.RoundToInt(totalDoubtDamage * experienceData.LevelMultiplier);
+                totalComposureGain = Mathf.RoundToInt(totalComposureGain * experienceData.LevelMultiplier);
+            }
+            
+            
+            
         }
 
         private float GetSynergyMultiplier(int count)
         {
             if (count <= 1) return 1f;
+            
+            // 1 => 1.5 => 2
             return 1f + (count - 1) * 0.5f;
         }
         

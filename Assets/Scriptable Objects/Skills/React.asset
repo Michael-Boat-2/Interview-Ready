@@ -16,5 +16,6 @@ MonoBehaviour:
   description: Can use JS web development framework
   cardType: 0
   value: 6
+  tags: 00000000
   cardIcon: {fileID: 21300000, guid: ae17377b60b304861b866bfbe5f6b3f6, type: 3}
   cardColor: {r: 1, g: 0.5538002, b: 0, a: 1}

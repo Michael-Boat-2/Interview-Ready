@@ -16,5 +16,6 @@ MonoBehaviour:
   description: Capable of approaching something from multiple angles
   cardType: 1
   value: 6
+  tags: 06000000
   cardIcon: {fileID: 21300000, guid: 5c9a33c9ff3b74dfe8050c6061b33110, type: 3}
   cardColor: {r: 0.93207544, g: 0.87058824, b: 0.07562114, a: 1}

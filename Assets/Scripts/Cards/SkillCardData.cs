@@ -10,10 +10,15 @@ namespace Cards
     }
     
 
+    public enum SkillTag {Web, Data, Team, Project, Network, Communication, ProblemSolving, Leadership}
+
+    
     [CreateAssetMenu(fileName = "SkillCardData", menuName = "Scriptable Objects/SkillCardData")]
     public class SkillCardData : ScriptableObject
     {
     
+        //public enum SkillTag {Web, Data, Team, Project, Network, Communication, ProblemSolving, Leadership}
+        
 
         [Header("Basic Info")]
         public string cardName;
@@ -27,7 +32,10 @@ namespace Cards
     
         [Header("Values")]
         public int value;           // Damage for Technical, Shield for Soft, Boost for Access
-    
+
+        [Header("Synergy Tag")] 
+        public SkillTag[] tags;
+        
         [Header("Visuals")]
         public Sprite cardIcon;
         public Color cardColor = Color.white;

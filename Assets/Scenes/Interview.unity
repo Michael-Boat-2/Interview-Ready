@@ -8027,7 +8027,7 @@ MonoBehaviour:
   experienceData: {fileID: 0}
   enemyMinDamage: 3
   enemyMaxDamage: 7
-  maxSelectedCards: 5
+  maxSelectedCards: 3
   maxDiscardsPerTurn: 1
   testStartingDeck:
   - {fileID: 11400000, guid: 7583d48a3e0d8894cb1733e091d35419, type: 2}
