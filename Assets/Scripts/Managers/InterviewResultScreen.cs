@@ -18,6 +18,7 @@ namespace Managers
         [SerializeField] private TextMeshProUGUI outcomeText;
         [SerializeField] private TextMeshProUGUI analysisText;
         [SerializeField] private Button returnButton;
+        [SerializeField] private Button menuButton;
 
         private void Start()
         {
@@ -42,12 +43,18 @@ namespace Managers
             {
                 case InterviewEndReason.Won:
                     if (outcomeText) outcomeText.text = "Congratulations! You got the job!";
+                    if(returnButton) returnButton.interactable = false;
+                    if (menuButton) menuButton.interactable = true;
                     break;
                 case InterviewEndReason.LostConfidence:
                     if (outcomeText) outcomeText.text = "You lost confidence during the interview.";
+                    if(returnButton) returnButton.interactable = true;
+                    if (menuButton) menuButton.interactable = true;
                     break;
                 case InterviewEndReason.TimedOut:
                     if (outcomeText) outcomeText.text = "The interview ended, and the interviewer still had some doubts.";
+                    if(returnButton) returnButton.interactable = true;
+                    if (menuButton) menuButton.interactable = true;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(reason), reason, null);
