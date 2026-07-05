@@ -88,7 +88,7 @@ namespace Managers
             {
                 analysis += "Well done! Your skill set impressed the interviewer.\n";
                 if (soft < 2)
-                    analysis += "Tip: Soft skills like Communication are valuable even after you land the job. Keep building them.";
+                    analysis += "Soft skills like Communication are valuable even after you land the job. Keep building them.";
             }
             else
             {
@@ -106,9 +106,11 @@ namespace Managers
                     {
                         analysis += "You didn't reduce the interviewer's doubt quickly enough.\n";
                         if (tech < 3)
-                            analysis += "Tip: Hard skills deal direct damage to doubt. Build a strong set of Technical cards to land hits faster.";
+                            analysis += "Tip: Hard skills deal direct damage to the interviewer's doubt. Build a strong set of Technical cards to convince them";
                         break;
                     }
+                    
+                    
                 }
 
                 analysis += "\nRemember: failure is part of the process. Keep learning and trying!";

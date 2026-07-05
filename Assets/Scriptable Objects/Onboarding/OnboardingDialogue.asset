@@ -35,9 +35,26 @@ MonoBehaviour:
   - text: So this is how your CV looks like.
     panelToActivate: 1
     showCharacter: 0
+  - text: Soft skills build shields that help you deal with tough questions, hard
+      skills helps you display your understanding of concepts, and your access skills
+      are all the great things you've done and can talk about to build yourself up.
+    panelToActivate: 0
+    showCharacter: 1
+  - text: "When you play cards of the same type together, they become stronger, and
+      the same goes for cards of similar skill tags. \n\nAlthough Acess cards count
+      both to your hard and soft skills"
+    panelToActivate: 0
+    showCharacter: 1
+  - text: You can discard one card per turn, but it will cost you some composure
+    panelToActivate: 0
+    showCharacter: 1
   - text: When you're ready, you can go in to meet the hiring manager about the job.
     panelToActivate: 0
     showCharacter: 1
-  - text: Also, remember to tkae it easy, failure is part of the process
+  - text: 'Also, remember to take it easy, failure is part of the process.
+
+
+      You''ll
+      get better as you go along'
     panelToActivate: 0
     showCharacter: 1
