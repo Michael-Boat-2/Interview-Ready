@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 namespace Managers
 {
@@ -17,14 +18,19 @@ namespace Managers
             1f + (currentLevel - 1) * 0.2f;
 
 
+        public static Action<float> ExperienceGained;
+        
+        
 
         public void AddExperience(int amount)
         {
+            var ratioGain = (float)amount / maxExpForLevelUp;
+            
             currentExp += amount;
-
+            
             //if we have exp go above amount to level-up
             //then level up and start counting to the next threshold
-            if (currentExp >= maxExpForLevelUp && currentLevel < maxLevel)
+            while (currentExp >= maxExpForLevelUp && currentLevel < maxLevel)
             {
                 currentExp -= maxExpForLevelUp;
                 currentLevel++;
@@ -34,6 +40,10 @@ namespace Managers
             if (currentLevel >= maxLevel)
                 currentExp = 0;
             
+          
+            
+            // do we need to pass this logic? maybe not
+            ExperienceGained?.Invoke(ratioGain);
             
         }
         

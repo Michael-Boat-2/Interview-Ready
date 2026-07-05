@@ -51,8 +51,8 @@ namespace Managers
         
         //Experience Data
         [SerializeField] private PlayerExperienceData experienceData;
-        [SerializeField] private TMP_Text experienceLevel;
-        [SerializeField] private Image experienceFill;
+        //[SerializeField] private TMP_Text experienceLevel;
+        //[SerializeField] private Image experienceFill;
 
         [Header("Enemy Settings")]
         [SerializeField] private int enemyMinDamage = 3;
@@ -693,7 +693,7 @@ namespace Managers
             isBattleActive = false;
             
             //Gain XP
-            experienceData?.AddExperience(100);
+            experienceData?.AddExperience(50);
             
             //Win SFX
             SoundManager.Instance?.PlaySFX(winSound);
@@ -725,7 +725,7 @@ namespace Managers
             isBattleActive = false;
             
             //Gain XP
-            experienceData?.AddExperience(100);
+            experienceData?.AddExperience(50);
             
             //Losing SFX
             SoundManager.Instance?.PlaySFX(loseSound);
