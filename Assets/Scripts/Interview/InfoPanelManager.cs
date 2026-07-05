@@ -24,6 +24,10 @@ namespace Interview
         // Prefab with a TextMeshProUGUI
         [SerializeField] private GameObject cardTextPrefab;
         
+        [Header("Player Profile")]
+        [SerializeField] private PlayerProfileData profileData;
+        [SerializeField] private TextMeshProUGUI playerNameLabel;
+        
         
         [Header("Type Colors")]
         [SerializeField] private Color technicalColor = new Color(0.2f, 0.6f, 1f);
@@ -45,6 +49,12 @@ namespace Interview
             deckManager.OnDiscardPileCountChanged += UpdateDiscardCount;
             UpdateDrawCount(deckManager.DrawPileCount);
             UpdateDiscardCount(deckManager.DiscardPileCount);
+            
+            
+            if (playerNameLabel && profileData)
+                playerNameLabel.text = profileData.playerName + "'s CV";
+            
+            
         }
 
         public void TogglePanel()

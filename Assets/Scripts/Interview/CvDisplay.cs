@@ -30,6 +30,12 @@ namespace Interview
         [SerializeField]private bool isOpen = false;
         
         
+        [Header("Player Profile")]
+        [SerializeField] private PlayerProfileData profileData;
+        [SerializeField] private TextMeshProUGUI playerNameLabel;
+        
+        
+        
         [Header("Type Colors")]
         [SerializeField] private Color technicalColor = new Color(0.2f, 0.6f, 1f);
         [SerializeField] private Color softColor = new Color(0.2f, 0.8f, 0.4f);
@@ -43,6 +49,11 @@ namespace Interview
                 toggleCvButton.onClick.AddListener(ToggleCv);*/
             
             cvPanel.SetActive(false);
+            
+            
+            if (playerNameLabel && profileData)
+                playerNameLabel.text = profileData.playerName + "'s CV";
+            
         }
 
         public void ToggleCv()

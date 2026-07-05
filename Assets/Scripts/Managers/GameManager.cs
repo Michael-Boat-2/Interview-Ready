@@ -43,6 +43,8 @@ namespace Managers
     
     
         [Header("Debug UI")]
+        [SerializeField] private PlayerProfileData profileData;
+        [SerializeField] private TextMeshProUGUI playerNameLabel;
         [SerializeField] private Image confidenceFill;
         [SerializeField] private Image composureFill;
         [SerializeField] private Image doubtFill;
@@ -70,21 +72,21 @@ namespace Managers
         
         
         //Interview ended reason
-        public System.Action<InterviewEndReason> OnInterviewEnded;
+        public Action<InterviewEndReason> OnInterviewEnded;
         
         
         // Events for UI
-        public System.Action OnInterviewStarted;
-        public System.Action OnInterviewWon;
-        public System.Action OnInterviewLost;
-        public System.Action<string> OnBattleMessage;
+        public Action OnInterviewStarted;
+        public Action OnInterviewWon;
+        public Action OnInterviewLost;
+        public Action<string> OnBattleMessage;
         
         //Fires every time hand is refilled
-        public System.Action OnPlayerTurnBegan; 
+        public Action OnPlayerTurnBegan; 
         
         
         // Fired whenever the selected hand changes — UI listens to this to highlight cards
-        public System.Action<List<SkillCardData>> OnSelectedHandChanged;
+        public Action<List<SkillCardData>> OnSelectedHandChanged;
 
         private List<int> selectedHandIndices = new List<int>(); // indices into hand, not references
     
@@ -188,6 +190,10 @@ namespace Managers
                 questionText.text = $"Question 1:\n\n{interviewQuestions[0]}";
             OnBattleMessage?.Invoke($"The interview begins with: \"{interviewQuestions[0]}\"");
         
+            //Player Name Label
+            if (playerNameLabel && profileData)
+                playerNameLabel.text = profileData.playerName;
+            
             // Hook filled images up to stat events
             if (confidenceFill && playerConfidence)
             {

@@ -7366,6 +7366,8 @@ MonoBehaviour:
   deckManager: {fileID: 2037511237}
   playerConfidence: {fileID: 11400000, guid: 7a41ffd58044ca6429b72ac681a6add9, type: 2}
   interviewerDoubt: {fileID: 11400000, guid: bcb0cae26a0a4d143adc0023004fc438, type: 2}
+  profileData: {fileID: 11400000, guid: 251db1c0b8fdc0846a86a228187fa3f1, type: 2}
+  playerNameLabel: {fileID: 1020460870}
   confidenceFill: {fileID: 170983282}
   composureFill: {fileID: 1474938293}
   doubtFill: {fileID: 602676570}
@@ -10424,6 +10426,8 @@ MonoBehaviour:
   contentParent: {fileID: 931129841}
   sectionPrefab: {fileID: 674112477929890204, guid: e411d1d55f104784e816f201c9c5f469, type: 3}
   cardTextPrefab: {fileID: 3907839706975407422, guid: 238d076560af0cd40a2c31aa6cd9976c, type: 3}
+  profileData: {fileID: 11400000, guid: 251db1c0b8fdc0846a86a228187fa3f1, type: 2}
+  playerNameLabel: {fileID: 736613991}
   technicalColor: {r: 1, g: 0.746535, b: 0.19999999, a: 1}
   softColor: {r: 0.3137255, g: 0.7584905, b: 0.45080093, a: 1}
   accessColor: {r: 0.7088716, g: 0.19999999, b: 0.9019608, a: 1}
