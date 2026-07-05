@@ -25,8 +25,8 @@ namespace Managers
         [Header("Round Settings")]
         [SerializeField] private int maxRounds = 10;
         [SerializeField] private float[] questionThresholds = { 0.75f, 0.5f, 0.25f };
-        private int currentRound = 0;
-        private int currentQuestionIndex = 0;
+        private int _currentRound = 0;
+        private int _currentQuestionIndex = 0;
         
         [Header("Interview Questions")]
         [SerializeField] private List<string> interviewQuestions = new List<string>();
@@ -42,12 +42,17 @@ namespace Managers
         [SerializeField] private InterviewerDoubt interviewerDoubt;
     
     
-        [Header("Debug UI")]
+        [Header("Battle UI")]
         [SerializeField] private PlayerProfileData profileData;
         [SerializeField] private TextMeshProUGUI playerNameLabel;
         [SerializeField] private Image confidenceFill;
         [SerializeField] private Image composureFill;
         [SerializeField] private Image doubtFill;
+        
+        //Experience Data
+        [SerializeField] private PlayerExperienceData experienceData;
+        [SerializeField] private TMP_Text experienceLevel;
+        [SerializeField] private Image experienceFill;
 
         [Header("Enemy Settings")]
         [SerializeField] private int enemyMinDamage = 3;
@@ -167,7 +172,7 @@ namespace Managers
         private void Update()
         {
             //Timer text
-            roundText.text = $"{(maxRounds - currentRound) * 6}:00";
+            roundText.text = $"{(maxRounds - _currentRound) * 6}:00";
         }
 
    
@@ -183,8 +188,8 @@ namespace Managers
             interviewerDoubt?.ResetForNewInterview();
             
             
-            currentRound = 0;
-            currentQuestionIndex = 0;
+            _currentRound = 0;
+            _currentQuestionIndex = 0;
             
             if (questionText && interviewQuestions.Count > 0)
                 questionText.text = $"Question 1:\n\n{interviewQuestions[0]}";
@@ -486,7 +491,7 @@ namespace Managers
         {
             if (!isBattleActive) return;
             
-            if (isBattleActive && currentRound < interviewQuestions.Count)
+            if (isBattleActive && _currentRound < interviewQuestions.Count)
             {
                 // Display next interview question
                 /*if (questionText)
@@ -523,13 +528,13 @@ namespace Managers
             int targetIndex = GetQuestionIndexFromDoubt(interviewerDoubt.CurrentDoubt);
 
             // Advance one question at a time, showing each briefly
-            while (currentQuestionIndex < targetIndex && currentQuestionIndex < interviewQuestions.Count - 1)
+            while (_currentQuestionIndex < targetIndex && _currentQuestionIndex < interviewQuestions.Count - 1)
             {
-                currentQuestionIndex++;
+                _currentQuestionIndex++;
                 if (questionText)
-                    questionText.text = $"Question {currentQuestionIndex + 1}:\n\n{interviewQuestions[currentQuestionIndex]}";
+                    questionText.text = $"Question {_currentQuestionIndex + 1}:\n\n{interviewQuestions[_currentQuestionIndex]}";
                 
-                OnBattleMessage?.Invoke($"The interviewer asks a new question: \"{interviewQuestions[currentQuestionIndex]}\"");
+                OnBattleMessage?.Invoke($"The interviewer asks a new question: \"{interviewQuestions[_currentQuestionIndex]}\"");
                 yield return new WaitForSeconds(1.2f); 
             }
 
@@ -586,7 +591,7 @@ namespace Managers
         
             
             // Calculate damage to deal
-            var damage = currentRound switch
+            var damage = _currentRound switch
             {
                 // Round 1
                 0 => Random.Range(3, 6),
@@ -610,10 +615,10 @@ namespace Managers
             if (isBattleActive && playerConfidence && playerConfidence.CurrentConfidence > 0)
             {
                 // increment round
-                currentRound++;
+                _currentRound++;
                 
                 
-                if (currentRound >= maxRounds)
+                if (_currentRound >= maxRounds)
                 {
 
                     if (questionText)
@@ -687,6 +692,9 @@ namespace Managers
         
             isBattleActive = false;
             
+            //Gain XP
+            experienceData?.AddExperience(100);
+            
             //Win SFX
             SoundManager.Instance?.PlaySFX(winSound);
            
@@ -715,6 +723,9 @@ namespace Managers
             if (!isBattleActive) return;
         
             isBattleActive = false;
+            
+            //Gain XP
+            experienceData?.AddExperience(100);
             
             //Losing SFX
             SoundManager.Instance?.PlaySFX(loseSound);
