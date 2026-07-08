@@ -29,7 +29,18 @@ namespace Managers
             foreach (var tipBtn in tipButtons)
             {
                 var index1 = index;
+
+                tipBtn.gameObject.SetActive(true);
+                tipBtn.interactable = true;
+                
+                tipBtn.onClick.RemoveAllListeners();
+                
                 tipBtn.onClick.AddListener(() => ShowTip(index1));
+                
+                var btnText = tipBtn.GetComponentInChildren<TextMeshProUGUI>();
+
+                if (btnText)
+                    btnText.text = $"Tip #{index + 1}";
                 
                 index++;
                 
@@ -57,7 +68,12 @@ namespace Managers
                 popupText.text = postTipData.InterviewTips[buttonIndex] ?? "";
                 tipPopup.SetActive(true);
             }
+            
             expData?.AddExperience(expReward);
+            
+            // Disable the button after claiming
+            tipButtons[buttonIndex].interactable = false;
+            tipButtons[buttonIndex] = null;   // mark as taken
         }
     }
         

@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Managers
 {
+    [CreateAssetMenu(fileName = "PostTip Data", menuName = "Game/PostTip Data")]
     public class PostTipData : ScriptableObject
     {
 

@@ -661,7 +661,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -25}
-  m_SizeDelta: {x: -500, y: -350}
+  m_SizeDelta: {x: -600, y: -350}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &91580323
 MonoBehaviour:
@@ -676,7 +676,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.7058824}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4495,7 +4495,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1133171399
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6254,7 +6254,7 @@ GameObject:
   - component: {fileID: 1411343793}
   - component: {fileID: 1411343792}
   m_Layer: 5
-  m_Name: Close Tips
+  m_Name: Close Posts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6355,9 +6355,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 353088001}
-        m_TargetAssemblyTypeName: Interview.CvDisplay, Assembly-CSharp
-        m_MethodName: ToggleCv
+      - m_Target: {fileID: 2048017799}
+        m_TargetAssemblyTypeName: Managers.PostManager, Assembly-CSharp
+        m_MethodName: TogglePostPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6380,7 +6380,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.43529412, g: 0.84313726, b: 0.6278124, a: 1}
+  m_Color: {r: 1, g: 0.5568628, b: 0.87058824, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7574,7 +7574,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: View CV
+  m_text: Close Posts
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4238fe20d37ee4a4f97b6084f16a8071, type: 2}
   m_sharedMaterial: {fileID: 8123583850458920147, guid: 4238fe20d37ee4a4f97b6084f16a8071, type: 2}
@@ -8787,12 +8787,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f38907865b2b1df47b0fddffea70793e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  postPanel: {fileID: 0}
-  tipPopup: {fileID: 0}
-  tipButtons: []
-  popupText: {fileID: 0}
-  postTipData: {fileID: 0}
-  expData: {fileID: 0}
+  postPanel: {fileID: 735702298}
+  tipPopup: {fileID: 1133171398}
+  tipButtons:
+  - {fileID: 211419352}
+  - {fileID: 1570081269}
+  - {fileID: 1048761223}
+  - {fileID: 1757410471}
+  - {fileID: 1257517495}
+  popupText: {fileID: 400627789}
+  postTipData: {fileID: 11400000, guid: a5669725049afbd49926ab74c520cc2d, type: 2}
+  expData: {fileID: 11400000, guid: 9d9d3be776629b64b8242b75662e004e, type: 2}
   expReward: 10
 --- !u!1001 &1925557293001140204
 PrefabInstance:
