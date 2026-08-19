@@ -200,26 +200,33 @@ namespace Managers
                 playerNameLabel.text = profileData.playerName;
             
             // Hook filled images up to stat events
-            if (confidenceFill && playerConfidence)
+            // Remove old listeners (prevents duplicates)
+            if (playerConfidence)
             {
-                confidenceFill.fillAmount = playerConfidence.ConfidencePercentage;
-                playerConfidence.OnConfidenceChanged += () => confidenceFill.fillAmount = playerConfidence.ConfidencePercentage;
-            }
+                playerConfidence.OnConfidenceChanged -= UpdateConfidenceFill;
+                playerConfidence.OnConfidenceChanged += UpdateConfidenceFill;
+                
+                playerConfidence.OnComposureChanged -= UpdateComposureFill;
+                playerConfidence.OnComposureChanged += UpdateComposureFill;
+                
+                // Set initial fill amounts
+                UpdateConfidenceFill();
+                UpdateComposureFill();
 
-            if (doubtFill && interviewerDoubt)
-            {
-                doubtFill.fillAmount = interviewerDoubt.DoubtPercentage;
-                interviewerDoubt.OnDoubtChanged += () => doubtFill.fillAmount = interviewerDoubt.DoubtPercentage;
             }
             
             
-            if (composureFill && playerConfidence)
+            if (interviewerDoubt)
             {
-                composureFill.fillAmount = (float)playerConfidence.CurrentComposure / playerConfidence.MaxComposure;
-                playerConfidence.OnComposureChanged += () =>
-                    composureFill.fillAmount = (float)playerConfidence.CurrentComposure / playerConfidence.MaxComposure;
+                interviewerDoubt.OnDoubtChanged -= UpdateDoubtFill;
+                interviewerDoubt.OnDoubtChanged += UpdateDoubtFill;
+
+                // Set initial doubt fill
+                UpdateDoubtFill();
             }
             
+
+          
 
             //var ownedCards = DeckManager.Instance ? DeckManager.Instance.GetAllOwnedCards() : null;
             var ownedCards = deckManager ? deckManager.GetAllOwnedCards() : null;
@@ -819,6 +826,23 @@ namespace Managers
         }
         
         
+        private void UpdateConfidenceFill() 
+        {
+            if (confidenceFill && playerConfidence)
+                confidenceFill.fillAmount = playerConfidence.ConfidencePercentage;
+        }
+
+        private void UpdateDoubtFill() 
+        {
+            if (doubtFill && interviewerDoubt)
+                doubtFill.fillAmount = interviewerDoubt.DoubtPercentage;
+        }
+
+        private void UpdateComposureFill() 
+        {
+            if (composureFill && playerConfidence)
+                composureFill.fillAmount = (float)playerConfidence.CurrentComposure / playerConfidence.MaxComposure;
+        }
         
         
         
@@ -830,6 +854,14 @@ namespace Managers
                 turnManager.OnPlayerTurnStart -= OnPlayerTurnStarted;
                 turnManager.OnEnemyTurnStart -= OnEnemyTurnStarted;
             }
+            
+            if (playerConfidence)
+            {
+                playerConfidence.OnConfidenceChanged -= UpdateConfidenceFill;
+                playerConfidence.OnComposureChanged -= UpdateComposureFill;
+            }
+            if (interviewerDoubt)
+                interviewerDoubt.OnDoubtChanged -= UpdateDoubtFill;
         
             if (playerConfidence)
                 playerConfidence.OnPlayerDied -= OnPlayerDied;

@@ -12,4 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e86d087d1926473fbd585301bc64adf9, type: 3}
   m_Name: PostTip Data
   m_EditorClassIdentifier: 
-  InterviewTips: []
+  InterviewTips:
+  - 'Use the STAR method to describe your achievements: Situation, Task, Action,
+    Result. It turns vague claims into concrete proof.'
+  - Tailor your CV to every job. Do this by making use of key words from their job
+    descriptions. This will help you get past the AI screens so a human can then
+    look at your application.
+  - Networking is not just asking for favours. Build genuine relationships by sharing
+    useful content, attending events, and offering help first.
+  - Quantify your impact wherever possible. Instead of 'improved code quality,' say
+    'reduced bugs by 30% through code reviews and automated testing.
+  - A portfolio project often outweighs certificates. Build one small project that
+    solves a real problem, document it, and put the link on your LinkedIn.

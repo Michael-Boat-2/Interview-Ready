@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: InterviewerDoubt
   m_EditorClassIdentifier: 
   currentDoubt: 0
-  maxDoubt: 100
-  startingDoubt: 100
+  maxDoubt: 150
+  startingDoubt: 150
