@@ -13,37 +13,36 @@ namespace Managers
         
         [SerializeField] private Button[] tipButtons;
         [SerializeField] private TextMeshProUGUI popupText;
-
-
+        
 
         [Header("Data")] 
         [SerializeField] private PostTipData postTipData;
+        [SerializeField] private PostProgressData progressData;
         [SerializeField] private PlayerExperienceData expData;
         [SerializeField] private int expReward = 10;
 
         private void Start()
         {
-
-            var index = 0;
             
-            foreach (var tipBtn in tipButtons)
+            if (progressData && postTipData)
+                progressData.Initialise(postTipData.InterviewTips.Length);
+            
+            for (int i = 0; i < tipButtons.Length; i++)
             {
-                var index1 = index;
+                // capture for closure
+                var index = i; 
 
-                tipBtn.gameObject.SetActive(true);
-                tipBtn.interactable = true;
+                tipButtons[i].gameObject.SetActive(true);
                 
-                tipBtn.onClick.RemoveAllListeners();
-                
-                tipBtn.onClick.AddListener(() => ShowTip(index1));
-                
-                var btnText = tipBtn.GetComponentInChildren<TextMeshProUGUI>();
+                // disable if already read
+                tipButtons[i].interactable = !(progressData && progressData.IsTipRead(index)); 
 
+                tipButtons[i].onClick.RemoveAllListeners();
+                tipButtons[i].onClick.AddListener(() => ShowTip(index));
+
+                TextMeshProUGUI btnText = tipButtons[i].GetComponentInChildren<TextMeshProUGUI>();
                 if (btnText)
                     btnText.text = $"Tip #{index + 1}";
-                
-                index++;
-                
             }
         }
         
@@ -59,9 +58,8 @@ namespace Managers
         private void ShowTip(int buttonIndex)
         {
 
-            if (postTipData.InterviewTips.Length <= 0 )
+            if (!postTipData || buttonIndex < 0 || buttonIndex >= postTipData.InterviewTips.Length)
                 return;
-                
             
             if (tipPopup && popupText)
             {
@@ -69,11 +67,15 @@ namespace Managers
                 tipPopup.SetActive(true);
             }
             
-            expData?.AddExperience(expReward);
+            // Award exp only if this tip hasn't been read yet this run
+            if (progressData && !progressData.IsTipRead(buttonIndex))
+            {
+                expData?.AddExperience(expReward);
+                progressData.MarkTipRead(buttonIndex);
+                tipButtons[buttonIndex]!.interactable = false;
+                Debug.Log($"Awarded {expReward} exp for Tip #{buttonIndex + 1}");
+            }
             
-            // Disable the button after claiming
-            tipButtons[buttonIndex].interactable = false;
-            tipButtons[buttonIndex] = null;   // mark as taken
         }
     }
         

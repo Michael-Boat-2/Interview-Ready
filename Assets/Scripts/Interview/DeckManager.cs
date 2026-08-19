@@ -38,7 +38,7 @@ namespace Interview
 
 
 
-        // Setup the deck with player's collected cards
+        // Set up the deck with player's collected cards
         public void SetupDeck(List<SkillCardData> ownedCards)
         {
             //allOwnedCards = new List<SkillCardData>(ownedCards);

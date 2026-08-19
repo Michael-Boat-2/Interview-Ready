@@ -19,8 +19,13 @@ namespace Managers
 
 
         public static Action<float> ExperienceGained;
-        
-        
+
+
+        public void ResetLevel()
+        {
+            currentExp = 0;
+            currentLevel = 1;
+        }
 
         public void AddExperience(int amount)
         {
