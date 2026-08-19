@@ -198,11 +198,11 @@ namespace Interview
         private void OnSelectionChanged(List<SkillCardData> selected)
         {
             RefreshSelectionVisuals();
-            SetPlayHandButtonState(selected.Count > 0 && selected.Count < gameManager.MaxSelectedCards);
+            SetPlayHandButtonState(selected.Count > 0 && selected.Count <= gameManager.MaxSelectedCards);
             SetDiscardButtonState(selected.Count == 1 && gameManager.DiscardsUsedThisTurn < gameManager.MaxDiscardsPerTurn);
 
             if (playHandButtonLabel)
-                playHandButtonLabel.text = selected.Count > 0 && selected.Count < gameManager.MaxSelectedCards
+                playHandButtonLabel.text = selected.Count > 0 && selected.Count <= gameManager.MaxSelectedCards
                     ? $"Answer ({selected.Count}/{gameManager.MaxSelectedCards})"
                     : $"Answer (0/{gameManager.MaxSelectedCards})";
         }

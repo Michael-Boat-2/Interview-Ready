@@ -173,7 +173,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Interview room BackGround_0: -8408123621702632929
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

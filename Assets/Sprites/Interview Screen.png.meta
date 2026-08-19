@@ -173,7 +173,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Interview Screen_0: -6369697060453960745
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

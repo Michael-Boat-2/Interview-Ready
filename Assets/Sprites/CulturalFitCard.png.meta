@@ -173,7 +173,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      CulturalFitCard_0: -6183427712414265927
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
