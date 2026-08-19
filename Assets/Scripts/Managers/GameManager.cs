@@ -710,9 +710,7 @@ namespace Managers
             selectedHandIndices.Clear();
             OnSelectedHandChanged?.Invoke(new List<SkillCardData>());
             
-            //exp gain on each turn
-            experienceData?.AddExperience(5);
-        
+            
             if (turnManager && turnManager.CurrentPhase == TurnPhase.PlayerTurn)
             {
                 turnManager.EndPlayerTurn();
