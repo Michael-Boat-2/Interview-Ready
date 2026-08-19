@@ -19,7 +19,7 @@ namespace Managers
         [SerializeField] private PostTipData postTipData;
         [SerializeField] private PostProgressData progressData;
         [SerializeField] private PlayerExperienceData expData;
-        [SerializeField] private int expReward = 10;
+        [SerializeField] private int expReward = 20;
 
         private void Start()
         {

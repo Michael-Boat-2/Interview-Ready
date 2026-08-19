@@ -8191,6 +8191,7 @@ MonoBehaviour:
   experienceData: {fileID: 11400000, guid: 9d9d3be776629b64b8242b75662e004e, type: 2}
   expLevel: {fileID: 1037623321}
   expFill: {fileID: 867250594}
+  fillAnimationDuration: 0.5
 --- !u!114 &1685416516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9393,7 +9394,7 @@ MonoBehaviour:
   postTipData: {fileID: 11400000, guid: a5669725049afbd49926ab74c520cc2d, type: 2}
   progressData: {fileID: 11400000, guid: 18de21b041945ab46a83cb38a5e4fbca, type: 2}
   expData: {fileID: 11400000, guid: 9d9d3be776629b64b8242b75662e004e, type: 2}
-  expReward: 10
+  expReward: 20
 --- !u!1001 &1925557293001140204
 PrefabInstance:
   m_ObjectHideFlags: 0

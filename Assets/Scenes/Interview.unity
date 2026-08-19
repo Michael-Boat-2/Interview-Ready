@@ -5446,6 +5446,7 @@ MonoBehaviour:
   experienceData: {fileID: 11400000, guid: 9d9d3be776629b64b8242b75662e004e, type: 2}
   expLevel: {fileID: 745645681}
   expFill: {fileID: 922383886}
+  fillAnimationDuration: 0.5
 --- !u!1 &708190781
 GameObject:
   m_ObjectHideFlags: 0
@@ -8038,7 +8039,7 @@ MonoBehaviour:
   confidenceFill: {fileID: 170983282}
   composureFill: {fileID: 1474938293}
   doubtFill: {fileID: 602676570}
-  experienceData: {fileID: 0}
+  experienceData: {fileID: 11400000, guid: 9d9d3be776629b64b8242b75662e004e, type: 2}
   enemyMinDamage: 3
   enemyMaxDamage: 7
   maxSelectedCards: 3
@@ -9160,6 +9161,7 @@ MonoBehaviour:
   experienceData: {fileID: 11400000, guid: 9d9d3be776629b64b8242b75662e004e, type: 2}
   expLevel: {fileID: 265867234}
   expFill: {fileID: 387334614}
+  fillAnimationDuration: 0.5
 --- !u!114 &1216033609
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ namespace Managers
     {
         [SerializeField][TextArea] private string tipText;
         [SerializeField] private PlayerExperienceData experienceData;
-        [SerializeField] private int expReward = 10;
+        [SerializeField] private int expReward = 20;
 
         [SerializeField] private GameObject tipPopup;          // panel with TextMeshProUGUI
         [SerializeField] private TextMeshProUGUI popupText;

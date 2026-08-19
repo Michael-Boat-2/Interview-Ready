@@ -709,6 +709,9 @@ namespace Managers
             //clear any previous selections
             selectedHandIndices.Clear();
             OnSelectedHandChanged?.Invoke(new List<SkillCardData>());
+            
+            //exp gain on each turn
+            experienceData?.AddExperience(5);
         
             if (turnManager && turnManager.CurrentPhase == TurnPhase.PlayerTurn)
             {
@@ -777,7 +780,7 @@ namespace Managers
             isBattleActive = false;
             
             //Gain XP
-            experienceData?.AddExperience(50);
+            experienceData?.AddExperience(120);
             
             //Losing SFX
             SoundManager.Instance?.PlaySFX(loseSound);
