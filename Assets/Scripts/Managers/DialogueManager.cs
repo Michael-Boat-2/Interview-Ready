@@ -68,6 +68,10 @@ namespace Managers
             
             if (dialogueText) dialogueText.text = entry.text;
             
+            //rebuild
+            LayoutRebuilder.ForceRebuildLayoutImmediate(dialogueText.rectTransform);
+            //LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundPanelRectTransform);
+            
             // activate necessary panel 
             SetPanelVisibility(entry.panelToActivate);
             
@@ -76,6 +80,8 @@ namespace Managers
             
             if (continuePrompt)
                 continuePrompt.SetActive(currentIndex < dialogueData.entries.Length);
+            
+            UnityEngine.EventSystems.EventSystem.current?.SetSelectedGameObject(null);
         }
 
         private void SetPanelVisibility(DialogueData.Entry.PanelType? type)
