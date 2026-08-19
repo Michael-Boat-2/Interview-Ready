@@ -15,12 +15,12 @@ MonoBehaviour:
   speakerName: Lisa
   characterPortrait: {fileID: 21300000, guid: 9145949f82f262b42a935c86b39eeb21, type: 3}
   entries:
-  - text: 'Hi! Im Lisa, I''ll help you make the right moves to stimulate your profile
-      so the Hiring manager will headhunt you and call you in for an interview
+  - text: 'Hi! Im Lisa, I''ll help you make the right moves to improve your profile
+      so that the Hiring manager can headhunt you and call you in for an interview
 
 
       Let''s
-      look at your profile'
+      look at your profile then, shall we?'
     panelToActivate: 0
     showCharacter: 1
   - text: The current job market is so competitive, but with the right cards you
@@ -31,27 +31,37 @@ MonoBehaviour:
   - text: Showing that you're constantly applying yourself, towards your interests
       is what recruiters like to see
     panelToActivate: 2
-    showCharacter: 1
-  - text: So this is how your CV looks like.
+    showCharacter: 0
+  - text: This is what your CV will look like, and it will be a representation of
+      all the skills you've gained over the years
     panelToActivate: 1
     showCharacter: 0
-  - text: Soft skills build shields that help you deal with tough questions, hard
-      skills helps you display your understanding of concepts, and your access skills
-      are all the great things you've done and can talk about to build yourself up.
+  - text: 'Soft skills build shields that help you deal with tough questions, hard
+      skills helps you display your understanding of concepts. '
     panelToActivate: 0
     showCharacter: 1
-  - text: "When you play cards of the same type together, they become stronger, and
-      the same goes for cards of similar skill tags. \n\nAlthough Acess cards count
-      both to your hard and soft skills"
+  - text: Your access skills are all the great things you've done and can talk about
+      to build yourself up.
     panelToActivate: 0
     showCharacter: 1
-  - text: You can discard one card per turn, but it will cost you some composure
+  - text: "When you play cards of the same type together (e.g three hard skill cards
+      to answer a question), they become stronger, and the same goes for cards of
+      similar skill tags. \n\n"
     panelToActivate: 0
     showCharacter: 1
-  - text: When you're ready, you can go in to meet the hiring manager about the job.
+  - text: If you dont like the cards in your hand, you can discard one card per turn
+      to try improve your options, but it will cost you some composure
     panelToActivate: 0
     showCharacter: 1
-  - text: 'Also, remember to take it easy, failure is part of the process.
+  - text: 'I think thats all for now.
+
+
+      When you''re ready, you can go in to
+      meet the hiring manager about the job.'
+    panelToActivate: 0
+    showCharacter: 1
+  - text: 'Remember to take it easy, failure is part of the learning process.
+
 
 
       You''ll
