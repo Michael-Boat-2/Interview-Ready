@@ -11,7 +11,7 @@ namespace Managers
 
         public void AddCard(SkillCardData card)
         {
-            if (card && !ownedCards.Contains(card))
+            if (card)
                 ownedCards.Add(card);
         }
 

@@ -56,7 +56,7 @@ namespace Managers
 
         [Header("Enemy Settings")]
         [SerializeField] private int enemyMinDamage = 3;
-        [SerializeField] private int enemyMaxDamage = 7;
+        //[SerializeField] private int enemyMaxDamage = 7;
     
         [Header("Hand Settings")]
         [SerializeField] private int maxSelectedCards = 3;
@@ -646,11 +646,16 @@ namespace Managers
             var damage = _currentRound switch
             {
                 // Round 1
-                0 => Random.Range(3, 6),
+                0 => Random.Range(5, 9),
                 // Round 2
-                1 => Random.Range(5, 9),
-                // Round 3 and above 
-                _ => Random.Range(7, 13)
+                1 => Random.Range(10, 15),
+                // Round 3 
+                2 => Random.Range(15, 21),
+                // Round 4
+                3 => Random.Range(20, 27),
+                // Round 5 and Above
+                _ => Random.Range(25, 33)
+                
             };
 
             OnBattleMessage?.Invoke($" -{damage} Confidence");

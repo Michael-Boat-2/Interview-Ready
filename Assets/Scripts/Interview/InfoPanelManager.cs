@@ -92,12 +92,14 @@ namespace Interview
 
             if (!playerDeckData) return;
 
-            CreateSection("Technical Skills", CardType.Technical, technicalColor);
+            CreateSection("Hard Skills", CardType.Technical, technicalColor);
             CreateSection("Soft Skills", CardType.Soft, softColor);
-            CreateSection("Access / Experience", CardType.Access, accessColor);
+            CreateSection("Experience", CardType.Access, accessColor);
 
             // Force layout rebuild to prevent overlapping
             LayoutRebuilder.ForceRebuildLayoutImmediate(contentParent as RectTransform);
+            
+            LayoutRebuilder.ForceRebuildLayoutImmediate(infoPanel.GetComponent<RectTransform>());
         }
 
         private void CreateSection(string title, CardType type, Color color)

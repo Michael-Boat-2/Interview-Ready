@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fab111586d4414286cd1baeac8d3a88, type: 3}
   m_Name: InterviewerDoubt
   m_EditorClassIdentifier: 
-  currentDoubt: 0
-  maxDoubt: 150
-  startingDoubt: 150
+  currentDoubt: 200
+  maxDoubt: 200
+  startingDoubt: 200

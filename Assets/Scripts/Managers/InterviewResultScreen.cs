@@ -81,7 +81,7 @@ namespace Managers
                 }
             }
 
-            var analysis = $"Your CV: {tech} Technical, {soft} Soft, {access} Experience skills.\n\n";
+            var analysis = $"Your CV Skills Tally: \n {tech} Hard Skills , {soft} Soft Skills , {access} Experience.\n\n";
 
             // General advice based on outcome
             if (reason == InterviewEndReason.Won)
@@ -106,7 +106,7 @@ namespace Managers
                     {
                         analysis += "You didn't reduce the interviewer's doubt quickly enough.\n";
                         if (tech < 3)
-                            analysis += "Tip: Hard skills deal direct damage to the interviewer's doubt. Build a strong set of Technical cards to convince them";
+                            analysis += "Tip: Hard skills deal direct damage to the interviewer's doubt. Build a strong set of Hard skill cards to convince them";
                         break;
                     }
                     

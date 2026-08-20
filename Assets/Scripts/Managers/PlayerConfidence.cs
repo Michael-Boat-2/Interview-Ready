@@ -43,7 +43,7 @@ namespace Managers
         {
             if (amount <= 0) return;
         
-            currentComposure += amount;
+            currentComposure = Mathf.Min(maxComposure, currentComposure + amount);
             OnComposureChanged?.Invoke();
             Debug.Log($"Composure +{amount}. Total: {currentComposure}");
         }
