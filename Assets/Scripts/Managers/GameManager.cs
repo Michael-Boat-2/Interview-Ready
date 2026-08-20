@@ -653,15 +653,19 @@ namespace Managers
             var damage = _currentRound switch
             {
                 // Round 1
-                0 => Random.Range(5, 9),
+                0 => Random.Range(4, 8),
                 // Round 2
-                1 => Random.Range(10, 15),
+                1 => Random.Range(8, 12),
                 // Round 3 
-                2 => Random.Range(15, 21),
+                2 => Random.Range(12, 16),
                 // Round 4
-                3 => Random.Range(20, 27),
-                // Round 5 and Above
-                _ => Random.Range(25, 33)
+                3 => Random.Range(16, 20),
+                // Round 5
+                4 => Random.Range(18, 22),
+                // and Above
+                _ => Random.Range(20, 24),
+                
+                
                 
             };
 
@@ -790,7 +794,7 @@ namespace Managers
             isBattleActive = false;
             
             //Gain XP
-            experienceData?.AddExperience(120);
+            experienceData?.AddExperience(70);
             
             //Losing SFX
             SoundManager.Instance?.PlaySFX(loseSound);
