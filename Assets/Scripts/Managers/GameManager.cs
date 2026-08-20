@@ -196,8 +196,15 @@ namespace Managers
             OnBattleMessage?.Invoke($"The interview begins with: \"{interviewQuestions[0]}\"");
         
             //Player Name Label
+            if (string.IsNullOrEmpty(profileData.playerName))
+                profileData.playerName = PlayerPrefs.GetString("PlayerName", "");
+            
+            
             if (playerNameLabel && profileData)
                 playerNameLabel.text = profileData.playerName;
+            
+            if (string.IsNullOrEmpty(profileData.playerName))
+                profileData.playerName = PlayerPrefs.GetString("PlayerName", "");
             
             // Hook filled images up to stat events
             // Remove old listeners (prevents duplicates)

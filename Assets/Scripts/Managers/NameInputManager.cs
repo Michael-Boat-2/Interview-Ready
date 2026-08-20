@@ -24,6 +24,8 @@ namespace Managers
             if (profileData && !string.IsNullOrWhiteSpace(nameInput.text))
             {
                 profileData.playerName = nameInput.text.Trim();
+                PlayerPrefs.SetString("PlayerName", profileData.playerName);
+                PlayerPrefs.Save();
                 SceneManager.LoadScene("Onboarding");
             }
             else

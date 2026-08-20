@@ -51,6 +51,9 @@ namespace Interview
             cvPanel.SetActive(false);
             
             
+            if (string.IsNullOrEmpty(profileData.playerName))
+                profileData.playerName = PlayerPrefs.GetString("PlayerName", "");
+            
             if (playerNameLabel && profileData)
                 playerNameLabel.text = profileData.playerName + "'s CV";
             

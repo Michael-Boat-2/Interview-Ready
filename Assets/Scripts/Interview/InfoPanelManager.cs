@@ -50,6 +50,8 @@ namespace Interview
             UpdateDrawCount(deckManager.DrawPileCount);
             UpdateDiscardCount(deckManager.DiscardPileCount);
             
+            if (string.IsNullOrEmpty(profileData.playerName))
+                profileData.playerName = PlayerPrefs.GetString("PlayerName", "");
             
             if (playerNameLabel && profileData)
                 playerNameLabel.text = profileData.playerName + "'s CV";
