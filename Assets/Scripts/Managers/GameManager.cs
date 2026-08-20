@@ -650,24 +650,52 @@ namespace Managers
         
             
             // Calculate damage to deal
-            var damage = _currentRound switch
+            //var damage = _currentRound switch
+            /*
             {
-                // Round 1
-                0 => Random.Range(4, 8),
-                // Round 2
+                // Round 1 and 2
+                0 when _currentRound == 1 => Random.Range(4, 8),
+                // 3 and 4
                 1 => Random.Range(8, 12),
-                // Round 3 
-                2 => Random.Range(12, 16),
-                // Round 4
-                3 => Random.Range(16, 20),
-                // Round 5
-                4 => Random.Range(18, 22),
+                // 5 and 6
+                2  => Random.Range(12, 16),
+                // 7 and 8
+                3  => Random.Range(16, 20),
+                // 9 and 10 
+                4  => Random.Range(18, 22),
                 // and Above
                 _ => Random.Range(20, 24),
                 
-                
-                
             };
+            */
+            
+            
+            int damage;
+            switch (_currentRound)
+            {
+                case 0:
+                case 1:
+                    damage = Random.Range(4, 8);
+                    break;
+                case 2:
+                    damage = Random.Range(8, 12);
+                    break;
+                case 3:
+                case 4:
+                    damage = Random.Range(12, 16);
+                    break;
+                case 5:
+                    damage = Random.Range(16, 20);
+                    break;
+                case 6:
+                case 7:
+                case 8:
+                    damage = Random.Range(18, 22);
+                    break;
+                default:
+                    damage = Random.Range(20, 24);
+                    break;
+            }
 
             OnBattleMessage?.Invoke($" -{damage} Confidence");
         
