@@ -9391,6 +9391,8 @@ MonoBehaviour:
   - {fileID: 1757410471}
   - {fileID: 1257517495}
   popupText: {fileID: 400627789}
+  unreadColor: {r: 1, g: 0.5568628, b: 0.87058824, a: 1}
+  readColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
   postTipData: {fileID: 11400000, guid: a5669725049afbd49926ab74c520cc2d, type: 2}
   progressData: {fileID: 11400000, guid: 18de21b041945ab46a83cb38a5e4fbca, type: 2}
   expData: {fileID: 11400000, guid: 9d9d3be776629b64b8242b75662e004e, type: 2}
