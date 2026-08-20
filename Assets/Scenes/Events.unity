@@ -2964,7 +2964,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0010375977}
+  m_AnchoredPosition: {x: 0, y: -0.0009765625}
   m_SizeDelta: {x: 0, y: 0.0019531}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &735702300
@@ -6703,7 +6703,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 960.00006, y: 50.002014}
+  m_AnchoredPosition: {x: 960, y: 50.001953}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1411343792
@@ -8192,6 +8192,8 @@ MonoBehaviour:
   expLevel: {fileID: 1037623321}
   expFill: {fileID: 867250594}
   fillAnimationDuration: 0.5
+  levelUpPause: 0.2
+  levelUpSound: {fileID: 8300000, guid: 68127b3f5c12f8e49ac05e22f739409b, type: 3}
 --- !u!114 &1685416516
 MonoBehaviour:
   m_ObjectHideFlags: 0

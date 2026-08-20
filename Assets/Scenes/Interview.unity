@@ -5448,6 +5448,8 @@ MonoBehaviour:
   expLevel: {fileID: 745645681}
   expFill: {fileID: 922383886}
   fillAnimationDuration: 0.5
+  levelUpPause: 0.2
+  levelUpSound: {fileID: 8300000, guid: 68127b3f5c12f8e49ac05e22f739409b, type: 3}
 --- !u!1 &708190781
 GameObject:
   m_ObjectHideFlags: 0
@@ -9164,6 +9166,8 @@ MonoBehaviour:
   expLevel: {fileID: 265867234}
   expFill: {fileID: 387334614}
   fillAnimationDuration: 0.5
+  levelUpPause: 0.2
+  levelUpSound: {fileID: 8300000, guid: 68127b3f5c12f8e49ac05e22f739409b, type: 3}
 --- !u!114 &1216033609
 MonoBehaviour:
   m_ObjectHideFlags: 0
