@@ -16,6 +16,8 @@ namespace Interview
         [SerializeField] private Image cardIconImage;
         [SerializeField] private Image cardBackgroundImage;
 
+        [SerializeField] private TextMeshProUGUI tagsText;
+
         [Header("Position Settings")]
         [SerializeField] private Vector2 offset = new Vector2(15, -15);
 
@@ -69,6 +71,25 @@ namespace Interview
 
             if (cardDescriptionText)
                 cardDescriptionText.text = card.description;
+            
+            //Show synergy tags
+            if (tagsText)
+            {
+                if (card.tags is { Length: > 0 })
+                {
+                    tagsText.text = string.Join("  ~  ", card.tags);
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(tagsText.rectTransform);
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(tagsText.transform.parent as RectTransform);
+                    tagsText.gameObject.SetActive(true);
+                }
+                else
+                {
+                    tagsText.text = "";
+                    tagsText.gameObject.SetActive(false);   // hide if no tags
+                }
+            }
+            
+            
             
             //Color work
             Color baseColor = card.cardColor;

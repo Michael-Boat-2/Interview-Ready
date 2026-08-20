@@ -14,6 +14,10 @@ namespace Managers
         [SerializeField] private Button[] tipButtons;
         [SerializeField] private TextMeshProUGUI popupText;
         
+        [Header("Tip Button Colors")]
+        [SerializeField] private Color unreadColor;
+
+        [SerializeField] private Color readColor = Color.gray;
 
         [Header("Data")] 
         [SerializeField] private PostTipData postTipData;
@@ -34,15 +38,26 @@ namespace Managers
 
                 tipButtons[i].gameObject.SetActive(true);
                 
-                // disable if already read
-                tipButtons[i].interactable = !(progressData && progressData.IsTipRead(index)); 
-
+                // always openable
+                tipButtons[i].interactable = true;
+                
+                // normal color set
+                Button tipButton = tipButtons[i];
+                ColorBlock colors = tipButton.colors;
+                colors.normalColor = (progressData && progressData.IsTipRead(index)) ? readColor : unreadColor;
+                tipButton.colors = colors;
+                
                 tipButtons[i].onClick.RemoveAllListeners();
                 tipButtons[i].onClick.AddListener(() => ShowTip(index));
 
                 TextMeshProUGUI btnText = tipButtons[i].GetComponentInChildren<TextMeshProUGUI>();
                 if (btnText)
+                {
                     btnText.text = $"Tip #{index + 1}";
+                }
+                
+                
+                   
             }
         }
         
@@ -72,7 +87,13 @@ namespace Managers
             {
                 expData?.AddExperience(expReward);
                 progressData.MarkTipRead(buttonIndex);
-                tipButtons[buttonIndex]!.interactable = false;
+                
+                //normal color set
+                Button tipButton = tipButtons[buttonIndex];
+                ColorBlock colors = tipButton.colors;
+                colors.normalColor = readColor;
+                tipButton.colors = colors;
+                
                 Debug.Log($"Awarded {expReward} exp for Tip #{buttonIndex + 1}");
             }
             
