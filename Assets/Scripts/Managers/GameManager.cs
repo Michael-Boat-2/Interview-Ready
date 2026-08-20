@@ -172,7 +172,7 @@ namespace Managers
         private void Update()
         {
             //Timer text
-            roundText.text = $"{(maxRounds - _currentRound) * 6}:00";
+            roundText.text = $"{(maxRounds - _currentRound) * 5}:00";
         }
 
    
